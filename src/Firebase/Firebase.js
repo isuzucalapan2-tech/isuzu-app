@@ -1,16 +1,14 @@
-// Import the functions you need from the SDKs you need
+// Import the functions you need from Firebase SDK
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";        // for authentication
 import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAolEPWrcreSgFDuARoWvCUP6WWmoQIwN8",
   authDomain: "isuzu-inventory.firebaseapp.com",
   projectId: "isuzu-inventory",
-  storageBucket: "isuzu-inventory.firebasestorage.app",
+  storageBucket: "isuzu-inventory.appspot.com", 
   messagingSenderId: "572489604841",
   appId: "1:572489604841:web:7e14a5eb7aa51b0f9a9a78",
   measurementId: "G-43P6GTKZ1G"
@@ -18,4 +16,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const analytics = getAnalytics(app);   // optional
+export const auth = getAuth(app);      // 🔑 export auth for login/register
