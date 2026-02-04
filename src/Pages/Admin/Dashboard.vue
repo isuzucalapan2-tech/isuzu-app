@@ -119,6 +119,12 @@ const logout = async () => {
 
 // Chart initialization
 const initCharts = () => {
+  // Detect dark mode
+  const isDarkMode = document.documentElement.classList.contains("dark");
+  const textColor = isDarkMode ? "#f3f4f6" : "#1f2937";
+  const gridColor = isDarkMode ? "#4b5563" : "#e5e7eb";
+  const backgroundColor = isDarkMode ? "#2d3748" : "#ffffff";
+
   // Monthly Sales Chart
   const salesCtx = document.getElementById("salesChart");
   new Chart(salesCtx, {
@@ -138,7 +144,25 @@ const initCharts = () => {
     },
     options: {
       responsive: true,
-      plugins: { legend: { display: true } },
+      plugins: { 
+        legend: { 
+          display: true,
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
+        }
+      },
+      scales: {
+        y: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        },
+        x: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        }
+      }
     },
   });
 
@@ -161,7 +185,17 @@ const initCharts = () => {
         },
       ],
     },
-    options: { responsive: true },
+    options: { 
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
+        }
+      }
+    },
   });
 };
 </script>
