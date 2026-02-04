@@ -109,8 +109,15 @@ const logout = async () => {
 };
 
 const initCharts = () => {
+  // Detect dark mode
+  const isDarkMode = document.documentElement.classList.contains("dark");
+  const textColor = isDarkMode ? "#f3f4f6" : "#1f2937";
+  const gridColor = isDarkMode ? "#4b5563" : "#e5e7eb";
+  const backgroundColor = isDarkMode ? "#2d3748" : "#ffffff";
 
-  new Chart(document.getElementById("salesChart"), {
+  // Monthly Sales Chart
+  const salesCtx = document.getElementById("salesChart");
+  new Chart(salesCtx, {
     type: "line",
     data: {
       labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
@@ -121,10 +128,32 @@ const initCharts = () => {
           borderColor: "rgb(34,197,94)",
           backgroundColor: "rgba(34,197,94,0.2)",
           fill: true,
-          tension: 0.4
+          tension: 0.4,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { 
+        legend: { 
+          display: true,
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
         }
-      ]
-    }
+      },
+      scales: {
+        y: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        },
+        x: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        }
+      }
+    },
   });
 
   new Chart(document.getElementById("inventoryChart"), {
@@ -137,11 +166,23 @@ const initCharts = () => {
           backgroundColor: [
             "rgb(59,130,246)",
             "rgb(16,185,129)",
-            "rgb(234,179,8)"
-          ]
+            "rgb(234,179,8)",
+          ],
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: { 
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
         }
-      ]
-    }
+      }
+    },
   });
 };
 </script>
