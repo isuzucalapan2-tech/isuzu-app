@@ -1,7 +1,9 @@
 <template>
   <div class="flex min-h-screen bg-gray-100">
     <!-- Sidebar -->
-    <Sidebar />
+    <div class="sticky top-0 h-screen overflow-y-auto">
+      <Sidebar />
+    </div>
 
     <!-- Main Content -->
     <div class="flex-1 p-6">
