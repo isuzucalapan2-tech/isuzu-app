@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen bg-gray-100">
+  <div class="flex min-h-screen" :class="settings.general.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'">
     <!-- Sidebar -->
     <div class="sticky top-0 h-screen overflow-y-auto">
       <Sidebar />
@@ -414,7 +414,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../../Firebase/Firebase";
 import Sidebar from "../../Components/Sidebar.vue";
@@ -465,7 +465,54 @@ onMounted(() => {
   if (!user) {
     router.push("/");
   }
+  // Load saved theme from localStorage
+  const savedTheme = localStorage.getItem("appTheme");
+  if (savedTheme) {
+    settings.value.general.theme = savedTheme;
+  }
+  // Apply theme
+  applyTheme(settings.value.general.theme);
 });
+
+// Watch for theme changes
+watch(
+  () => settings.value.general.theme,
+  (newTheme) => {
+    applyTheme(newTheme);
+  }
+);
+
+// Apply theme function
+const applyTheme = (theme) => {
+  const htmlElement = document.documentElement;
+  const bodyElement = document.body;
+  
+  // Remove all theme classes first
+  htmlElement.classList.remove("dark", "light");
+  
+  if (theme === "dark") {
+    htmlElement.classList.add("dark");
+    bodyElement.style.backgroundColor = "#111827";
+    bodyElement.style.color = "#f3f4f6";
+  } else if (theme === "light") {
+    htmlElement.classList.add("light");
+    bodyElement.style.backgroundColor = "#ffffff";
+    bodyElement.style.color = "#1f2937";
+  } else if (theme === "auto") {
+    // Auto theme based on system preference
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      htmlElement.classList.add("dark");
+      bodyElement.style.backgroundColor = "#111827";
+      bodyElement.style.color = "#f3f4f6";
+    } else {
+      htmlElement.classList.add("light");
+      bodyElement.style.backgroundColor = "#ffffff";
+      bodyElement.style.color = "#1f2937";
+    }
+  }
+  // Save to localStorage
+  localStorage.setItem("appTheme", theme);
+};
 
 // Save Settings
 const saveSettings = (tab) => {
