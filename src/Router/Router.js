@@ -5,6 +5,7 @@ import Dashboard from '../Pages/Admin/Dashboard.vue'
 import Approve from '../Pages/Admin/Approve.vue'
 import Setting from '../Pages/Admin/Setting.vue'
 import Inventory from '../Pages/Admin/Inventory.vue'
+import UserManagement from '../Pages/Admin/UserManagement.vue'
 
 const routes = [
   { path: '/', name: 'Login', component: Login },
@@ -12,7 +13,8 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path : '/approve', name: 'Approve', component: Approve },
   { path: '/settings', name: 'Settings', component: Setting },
-  { path: '/inventory', name: 'Inventory', component: Inventory }
+  { path: '/inventory', name: 'Inventory', component: Inventory },
+  { path: '/user-management', name: 'UserManagement', component: UserManagement }
 ]
 
 const router = createRouter({

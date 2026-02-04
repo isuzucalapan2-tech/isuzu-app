@@ -1,11 +1,11 @@
 <template>
-  <div class="flex min-h-screen bg-white">
+  <div class="min-h-screen bg-white">
 
-    <!-- Sidebar -->
-    <Sidebar />
+    <!-- Topbar -->
+    <Topbar />
 
     <!-- Content -->
-    <div class="flex-1 p-8">
+    <div class="p-8">
 
       <h1 class="text-2xl font-bold mb-6 text-gray-800">
         User Approval
@@ -76,7 +76,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import Sidebar from "../../Components/Sidebar.vue";
+import Topbar from "../../Components/Topbar.vue";
 
 import {
   collection,
@@ -96,7 +96,7 @@ const loadPendingUsers = () => {
   try {
     const q = query(
       collection(db, "users"),
-      where("approved", "==", false) // only false
+      where("approved", "==", false)
     );
 
     // Real-time listener
@@ -109,12 +109,11 @@ const loadPendingUsers = () => {
           email: data.email || "N/A",
           role: data.role || "",
           approved: data.approved || false,
-          selectedRole: "" // temporary role selection
+          selectedRole: ""
         };
       });
-
-      console.log("Pending users:", pendingUsers.value); // debug
     });
+
   } catch (err) {
     console.error("Firestore error:", err);
   }
@@ -135,8 +134,9 @@ const approveUser = async (user) => {
       role: user.selectedRole
     });
 
-    // Remove user instantly from the table
-    pendingUsers.value = pendingUsers.value.filter(u => u.id !== user.id);
+    pendingUsers.value = pendingUsers.value.filter(
+      u => u.id !== user.id
+    );
 
   } catch (error) {
     console.error("Error approving user:", error);
