@@ -6,13 +6,13 @@ import { getAnalytics } from "firebase/analytics";
 
 // Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyAolEPWrcreSgFDuARoWvCUP6WWmoQIwN8",
-  authDomain: "isuzu-inventory.firebaseapp.com",
-  projectId: "isuzu-inventory",
-  storageBucket: "isuzu-inventory.appspot.com",
-  messagingSenderId: "572489604841",
-  appId: "1:572489604841:web:7e14a5eb7aa51b0f9a9a78",
-  measurementId: "G-43P6GTKZ1G"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID // Optional
 };
 
 // Initialize Firebase
