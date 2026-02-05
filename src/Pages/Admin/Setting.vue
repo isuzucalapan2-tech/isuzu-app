@@ -1,5 +1,5 @@
 <template>
-  <div :class="themeClass" class="min-h-screen flex flex-col">
+  <div v-if="!isLoading" :class="themeClass" class="min-h-screen flex flex-col">
 
     <!-- Topbar (sticky) -->
     <div class="sticky top-0 z-50">
@@ -138,10 +138,12 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../../Firebase/Firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import Topbar from "../../components/Topbar.vue";
 
 const router = useRouter();
 const activeTab = ref("general");
+const isLoading = ref(true);
 
 const settings = ref({
   general: {
@@ -189,12 +191,17 @@ const cardClass = computed(() => settings.value.general.theme === 'dark' ? 'bg-g
 
 // Lifecycle
 onMounted(() => {
-  const user = auth.currentUser;
-  if (!user) router.push("/");
-
-  const savedTheme = localStorage.getItem("appTheme");
-  if (savedTheme) settings.value.general.theme = savedTheme;
-  applyTheme(settings.value.general.theme);
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    isLoading.value = false;
+    if (!user) {
+      router.push("/");
+      return;
+    }
+    const savedTheme = localStorage.getItem("appTheme");
+    if (savedTheme) settings.value.general.theme = savedTheme;
+    applyTheme(settings.value.general.theme);
+  });
+  return () => unsubscribe();
 });
 
 watch(() => settings.value.general.theme, (newTheme) => applyTheme(newTheme));

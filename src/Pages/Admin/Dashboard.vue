@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col bg-gray-100">
+  <div v-if="!isLoading" class="h-screen flex flex-col bg-gray-100">
 
     <!-- Sticky Topbar -->
     <div class="sticky top-0 z-50">
@@ -82,7 +82,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../../Firebase/Firebase";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import Topbar from "../../components/Topbar.vue";
 
 import { Chart, registerables } from "chart.js";
@@ -90,17 +90,22 @@ Chart.register(...registerables);
 
 const router = useRouter();
 const userEmail = ref("");
+const isLoading = ref(true);
 
 onMounted(() => {
-  const user = auth.currentUser;
+  // Wait for Firebase to restore the user session
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    isLoading.value = false;
+    if (user) {
+      userEmail.value = user.email;
+      setTimeout(initCharts, 100);
+    } else {
+      router.push("/");
+    }
+  });
 
-  if (user) {
-    userEmail.value = user.email;
-  } else {
-    router.push("/");
-  }
-
-  setTimeout(initCharts, 100);
+  // Cleanup subscription on unmount
+  return () => unsubscribe();
 });
 
 const logout = async () => {

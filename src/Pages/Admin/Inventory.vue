@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div v-if="!isLoading" class="min-h-screen bg-gray-100">
     <!-- Topbar -->
     <Topbar />
 
@@ -161,9 +161,11 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../../Firebase/Firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import Topbar from "../../Components/Topbar.vue";
 
 const router = useRouter();
+const isLoading = ref(true);
 
 const searchQuery = ref("");
 const filterCategory = ref("");
@@ -185,7 +187,13 @@ const inventoryItems = ref([
 ]);
 
 onMounted(() => {
-  if (!auth.currentUser) router.push("/");
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    isLoading.value = false;
+    if (!user) {
+      router.push("/");
+    }
+  });
+  return () => unsubscribe();
 });
 
 const filteredInventory = computed(() => {
