@@ -59,6 +59,34 @@
 
       </div>
 
+      <!-- Inventory Summary Cards -->
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Inventory Summary</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <div class="bg-white shadow-lg rounded-lg p-6">
+            <h3 class="text-gray-600 text-sm font-medium">Total Parts</h3>
+            <p class="text-3xl font-bold text-gray-800">{{ inventoryItems.length }}</p>
+          </div>
+
+          <div class="bg-white shadow-lg rounded-lg p-6">
+            <h3 class="text-green-600 text-sm font-medium">In Stock</h3>
+            <p class="text-3xl font-bold text-green-600">{{ getInStockCount() }}</p>
+          </div>
+
+          <div class="bg-white shadow-lg rounded-lg p-6">
+            <h3 class="text-yellow-600 text-sm font-medium">Low Stock</h3>
+            <p class="text-3xl font-bold text-yellow-600">{{ getLowStockCount() }}</p>
+          </div>
+
+          <div class="bg-white shadow-lg rounded-lg p-6">
+            <h3 class="text-red-600 text-sm font-medium">Out of Stock</h3>
+            <p class="text-3xl font-bold text-red-600">{{ getOutOfStockCount() }}</p>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -91,6 +119,89 @@ Chart.register(...registerables);
 const router = useRouter();
 const userEmail = ref("");
 const isLoading = ref(true);
+
+const inventoryItems = ref([
+  {
+    id: 1,
+    partCode: "ISZ-001",
+    partName: "Engine Oil Filter",
+    category: "Engine Parts",
+    quantity: 150,
+    minLevel: 50,
+    unitPrice: 1455,
+    status: "in-stock",
+  },
+  {
+    id: 2,
+    partCode: "ISZ-002",
+    partName: "Air Filter",
+    category: "Engine Parts",
+    quantity: 25,
+    minLevel: 50,
+    unitPrice: 894,
+    status: "low",
+  },
+  {
+    id: 3,
+    partCode: "ISZ-003",
+    partName: "Transmission Fluid",
+    category: "Transmission",
+    quantity: 80,
+    minLevel: 50,
+    unitPrice: 2575,
+    status: "in-stock",
+  },
+  {
+    id: 4,
+    partCode: "ISZ-004",
+    partName: "Brake Pads",
+    category: "Suspension",
+    quantity: 0,
+    minLevel: 30,
+    unitPrice: 4815,
+    status: "out",
+  },
+  {
+    id: 5,
+    partCode: "ISZ-005",
+    partName: "Battery",
+    category: "Electrical",
+    quantity: 45,
+    minLevel: 20,
+    unitPrice: 6775,
+    status: "in-stock",
+  },
+  {
+    id: 6,
+    partCode: "ISZ-006",
+    partName: "Door Handle",
+    category: "Body Parts",
+    quantity: 110,
+    minLevel: 40,
+    unitPrice: 2015,
+    status: "in-stock",
+  },
+  {
+    id: 7,
+    partCode: "ISZ-007",
+    partName: "Spark Plugs",
+    category: "Engine Parts",
+    quantity: 200,
+    minLevel: 100,
+    unitPrice: 727,
+    status: "in-stock",
+  },
+  {
+    id: 8,
+    partCode: "ISZ-008",
+    partName: "Alternator",
+    category: "Electrical",
+    quantity: 15,
+    minLevel: 25,
+    unitPrice: 14055,
+    status: "low",
+  },
+]);
 
 onMounted(() => {
   // Load and apply saved theme from localStorage
@@ -129,6 +240,15 @@ const logout = async () => {
   await signOut(auth);
   router.push("/");
 };
+
+const getInStockCount = () =>
+  inventoryItems.value.filter((i) => i.status === "in-stock").length;
+
+const getLowStockCount = () =>
+  inventoryItems.value.filter((i) => i.status === "low").length;
+
+const getOutOfStockCount = () =>
+  inventoryItems.value.filter((i) => i.status === "out").length;
 
 const initCharts = () => {
   // Detect dark mode
