@@ -187,6 +187,12 @@ const inventoryItems = ref([
 ]);
 
 onMounted(() => {
+  // Load and apply saved theme from localStorage
+  const savedTheme = localStorage.getItem("appTheme");
+  if (savedTheme) {
+    applyTheme(savedTheme);
+  }
+
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     isLoading.value = false;
     if (!user) {
@@ -195,6 +201,17 @@ onMounted(() => {
   });
   return () => unsubscribe();
 });
+
+// Apply theme function
+const applyTheme = (theme) => {
+  const htmlElement = document.documentElement;
+  htmlElement.classList.remove("dark", "light");
+  if (theme === "dark") {
+    htmlElement.classList.add("dark");
+  } else if (theme === "light") {
+    htmlElement.classList.add("light");
+  }
+};
 
 const filteredInventory = computed(() => {
   return inventoryItems.value.filter((item) => {

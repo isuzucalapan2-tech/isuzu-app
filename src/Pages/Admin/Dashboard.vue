@@ -93,6 +93,12 @@ const userEmail = ref("");
 const isLoading = ref(true);
 
 onMounted(() => {
+  // Load and apply saved theme from localStorage
+  const savedTheme = localStorage.getItem("appTheme");
+  if (savedTheme) {
+    applyTheme(savedTheme);
+  }
+
   // Wait for Firebase to restore the user session
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     isLoading.value = false;
@@ -107,6 +113,17 @@ onMounted(() => {
   // Cleanup subscription on unmount
   return () => unsubscribe();
 });
+
+// Apply theme function
+const applyTheme = (theme) => {
+  const htmlElement = document.documentElement;
+  htmlElement.classList.remove("dark", "light");
+  if (theme === "dark") {
+    htmlElement.classList.add("dark");
+  } else if (theme === "light") {
+    htmlElement.classList.add("light");
+  }
+};
 
 const logout = async () => {
   await signOut(auth);
