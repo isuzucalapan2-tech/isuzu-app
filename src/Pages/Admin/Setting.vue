@@ -18,6 +18,21 @@
         <button @click="activeTab = 'warehouse'" :class="tabClass('warehouse')">Warehouse</button>
       </div>
 
+      <!-- Loading State -->
+      <div v-if="isSaving" class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4">
+        Saving settings...
+      </div>
+
+      <!-- Success Message -->
+      <div v-if="saveSuccess" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
+        Settings saved successfully!
+      </div>
+
+      <!-- Error Message -->
+      <div v-if="saveError" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+        Error saving settings: {{ saveError }}
+      </div>
+
       <!-- Tab Content -->
       <div class="space-y-6">
 
@@ -55,8 +70,12 @@
                   <option value="auto">Auto</option>
                 </select>
               </div>
-              <button @click="saveSettings('general')" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
-                Save General Settings
+              <button 
+                @click="saveSettings('general')" 
+                :disabled="isSaving"
+                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ isSaving ? 'Saving...' : 'Save General Settings' }}
               </button>
             </div>
           </div>
@@ -90,7 +109,13 @@
                 Enable Auto Reorder
               </label>
             </div>
-            <button @click="saveSettings('inventory')" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Save Inventory Settings</button>
+            <button 
+              @click="saveSettings('inventory')" 
+              :disabled="isSaving"
+              class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ isSaving ? 'Saving...' : 'Save Inventory Settings' }}
+            </button>
           </div>
         </div>
 
@@ -106,7 +131,13 @@
                 <input type="checkbox" v-model="settings.notifications[key]" class="w-5 h-5"/>
               </div>
             </div>
-            <button @click="saveSettings('notifications')" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Save Notification Settings</button>
+            <button 
+              @click="saveSettings('notifications')" 
+              :disabled="isSaving"
+              class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ isSaving ? 'Saving...' : 'Save Notification Settings' }}
+            </button>
           </div>
         </div>
 
@@ -125,7 +156,13 @@
               </div>
             </div>
             <button @click="addWarehouse" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">+ Add Warehouse</button>
-            <button @click="saveSettings('warehouse')" class="mt-4 ml-2 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Save Warehouse Settings</button>
+            <button 
+              @click="saveSettings('warehouse')" 
+              :disabled="isSaving"
+              class="mt-4 ml-2 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ isSaving ? 'Saving...' : 'Save Warehouse Settings' }}
+            </button>
           </div>
         </div>
 
@@ -137,15 +174,21 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import { useRouter } from "vue-router";
-import { auth } from "../../Firebase/Firebase";
+import { auth, db } from "../../Firebase/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import Topbar from "../../components/Topbar.vue";
 
 const router = useRouter();
 const activeTab = ref("general");
 const isLoading = ref(true);
+const isSaving = ref(false);
+const saveSuccess = ref(false);
+const saveError = ref(null);
+const currentUser = ref(null);
 
-const settings = ref({
+// Default settings
+const defaultSettings = {
   general: {
     companyName: "Isuzu Motors Parts Philippines - Calapan Branch",
     companyEmail: "calapan@isuzumotors.ph",
@@ -172,7 +215,9 @@ const settings = ref({
       { name: "Secondary Warehouse - Manila", location: "Manila, Metro Manila, Philippines", capacity: 3000 },
     ],
   },
-});
+};
+
+const settings = ref(JSON.parse(JSON.stringify(defaultSettings)));
 
 const notificationLabels = {
   emailNotifications: "Email Notifications",
@@ -187,25 +232,84 @@ const themeClass = computed(() => {
   if (settings.value.general.theme === 'light') return 'bg-gray-100 text-gray-900';
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900';
 });
+
 const cardClass = computed(() => settings.value.general.theme === 'dark' ? 'bg-gray-800 shadow-lg rounded-lg p-6' : 'bg-white shadow-lg rounded-lg p-6');
 
-// Lifecycle
-onMounted(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    isLoading.value = false;
-    if (!user) {
-      router.push("/");
-      return;
+// Load settings from Firestore
+const loadSettings = async (userId) => {
+  try {
+    const settingsDoc = await getDoc(doc(db, "users", userId, "settings", "preferences"));
+    if (settingsDoc.exists()) {
+      const data = settingsDoc.data();
+      // Merge with defaults to ensure all fields exist
+      settings.value = {
+        general: { ...defaultSettings.general, ...data.general },
+        inventory: { ...defaultSettings.inventory, ...data.inventory },
+        notifications: { ...defaultSettings.notifications, ...data.notifications },
+        warehouse: { ...defaultSettings.warehouse, ...data.warehouse },
+      };
+    } else {
+      // No settings found, use defaults and save them
+      await saveSettingsToFirebase(userId);
     }
-    const savedTheme = localStorage.getItem("appTheme");
-    if (savedTheme) settings.value.general.theme = savedTheme;
-    applyTheme(settings.value.general.theme);
-  });
-  return () => unsubscribe();
-});
+  } catch (error) {
+    console.error("Error loading settings:", error);
+    saveError.value = "Failed to load settings from database.";
+  }
+};
 
-watch(() => settings.value.general.theme, (newTheme) => applyTheme(newTheme));
+// Save settings to Firestore
+const saveSettingsToFirebase = async (userId) => {
+  try {
+    await setDoc(doc(db, "users", userId, "settings", "preferences"), {
+      general: settings.value.general,
+      inventory: settings.value.inventory,
+      notifications: settings.value.notifications,
+      warehouse: settings.value.warehouse,
+      updatedAt: new Date().toISOString(),
+    });
+    return true;
+  } catch (error) {
+    console.error("Error saving settings:", error);
+    throw error;
+  }
+};
 
+// Save settings handler
+const saveSettings = async (tab) => {
+  if (!currentUser.value) {
+    saveError.value = "You must be logged in to save settings.";
+    return;
+  }
+
+  isSaving.value = true;
+  saveSuccess.value = false;
+  saveError.value = null;
+
+  try {
+    await saveSettingsToFirebase(currentUser.value.uid);
+    saveSuccess.value = true;
+    
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      saveSuccess.value = false;
+    }, 3000);
+  } catch (error) {
+    saveError.value = error.message || "Failed to save settings. Please try again.";
+  } finally {
+    isSaving.value = false;
+  }
+};
+
+const addWarehouse = () => {
+  settings.value.warehouse.locations.push({ name: "", location: "", capacity: 0 });
+};
+
+const removeWarehouse = (idx) => {
+  settings.value.warehouse.locations.splice(idx, 1);
+};
+
+// Apply theme function
 const applyTheme = (theme) => {
   const html = document.documentElement;
   html.classList.remove("dark", "light");
@@ -214,9 +318,38 @@ const applyTheme = (theme) => {
   localStorage.setItem("appTheme", theme);
 };
 
-const saveSettings = (tab) => alert(`${tab} settings saved!`);
-const addWarehouse = () => settings.value.warehouse.locations.push({ name: "", location: "", capacity: 0 });
-const removeWarehouse = (idx) => settings.value.warehouse.locations.splice(idx, 1);
+// Lifecycle
+onMounted(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      router.push("/");
+      return;
+    }
+    
+    currentUser.value = user;
+    
+    // Load saved theme from localStorage first
+    const savedTheme = localStorage.getItem("appTheme");
+    if (savedTheme) {
+      settings.value.general.theme = savedTheme;
+    }
+    
+    // Load settings from Firestore
+    await loadSettings(user.uid);
+    
+    // Apply theme
+    applyTheme(settings.value.general.theme);
+    
+    isLoading.value = false;
+  });
+  
+  return () => unsubscribe();
+});
+
+// Watch for theme changes
+watch(() => settings.value.general.theme, (newTheme) => {
+  applyTheme(newTheme);
+});
 
 // Tab button class
 const tabClass = (tab) =>
