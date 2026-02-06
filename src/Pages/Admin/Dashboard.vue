@@ -8,339 +8,219 @@
 
     <!-- Scrollable Content -->
     <div class="flex-1 overflow-y-auto p-6">
-      <h1 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4">Dashboard</h1>
+      <h1 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4 flex items-center gap-2">
+        <LayoutDashboard class="w-7 h-7 text-red-600" />
+        Dashboard
+      </h1>
 
+      <!-- Inventory Summary -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
+          <Boxes class="w-6 h-6 text-red-600" />
+          Inventory Summary
+        </h2>
 
-      <!-- User Info -->
-      <div class="mb-6">
-        <p class="text-gray-800 font-medium">Welcome,</p>
-        <p class="text-gray-800 font-bold">{{ userEmail }}</p>
-      </div>
-
-      <!-- Logout -->
-      <button
-        @click="logout"
-        class="mb-6 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-      >
-        Logout
-      </button>
-
-      <!-- Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-
-        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-          <h2 class="text-xl font-bold mb-2">Total Vehicles</h2>
-
-          <p class="text-3xl font-bold text-gray-800">1,250</p>
-        </div>
-
-        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-          <h2 class="text-xl font-bold mb-2">Trucks</h2>
-
-          <p class="text-3xl font-bold text-gray-800">450</p>
-        </div>
-
-        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-          <h2 class="text-xl font-bold mb-2">SUVs</h2>
-
-          <p class="text-3xl font-bold text-gray-800">300</p>
-        </div>
-
-        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-          <h2 class="text-xl font-bold mb-2">Pickups</h2>
-
-          <p class="text-3xl font-bold text-gray-800">500</p>
-        </div>
-
-        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-          <h2 class="text-xl font-bold mb-2">Available Stock</h2>
-
-          <p class="text-3xl font-bold text-gray-800">1,100</p>
-        </div>
-
-        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-          <h2 class="text-xl font-bold mb-2">Sold Units</h2>
-
-          <p class="text-3xl font-bold text-gray-800">150</p>
-        </div>
-
-
-      </div>
-
-      <!-- Inventory Summary Cards -->
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Inventory Summary</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-            <h3 class="text-gray-600 text-sm font-medium">Total Parts</h3>
-
-            <p class="text-3xl font-bold text-gray-800">{{ inventoryItems.length }}</p>
+          <!-- Total Parts -->
+          <div class="bg-white shadow rounded-lg p-6 border-l-2 border-red-600 flex items-center gap-4">
+            <Package class="w-10 h-10 text-gray-600" />
+            <div>
+              <h3 class="text-sm text-gray-600">Total Parts</h3>
+              <p class="text-3xl font-bold">{{ inventoryItems.length }}</p>
+            </div>
           </div>
 
-          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-            <h3 class="text-green-600 text-sm font-medium">In Stock</h3>
-
-            <p class="text-3xl font-bold text-green-600">{{ getInStockCount() }}</p>
+          <!-- In Stock -->
+          <div class="bg-white shadow rounded-lg p-6 border-l-2 border-red-600 flex items-center gap-4">
+            <CheckCircle class="w-10 h-10 text-green-600" />
+            <div>
+              <h3 class="text-sm text-green-600">In Stock</h3>
+              <p class="text-3xl font-bold text-green-600">{{ inStock }}</p>
+            </div>
           </div>
 
-          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-            <h3 class="text-yellow-600 text-sm font-medium">Low Stock</h3>
-
-            <p class="text-3xl font-bold text-yellow-600">{{ getLowStockCount() }}</p>
+          <!-- Low Stock -->
+          <div class="bg-white shadow rounded-lg p-6 border-l-2 border-red-600 flex items-center gap-4">
+            <AlertTriangle class="w-10 h-10 text-yellow-600" />
+            <div>
+              <h3 class="text-sm text-yellow-600">Low Stock</h3>
+              <p class="text-3xl font-bold text-yellow-600">{{ lowStock }}</p>
+            </div>
           </div>
 
-          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-            <h3 class="text-red-600 text-sm font-medium">Out of Stock</h3>
-
-            <p class="text-3xl font-bold text-red-600">{{ getOutOfStockCount() }}</p>
+          <!-- Out of Stock -->
+          <div class="bg-white shadow rounded-lg p-6 border-l-2 border-red-600 flex items-center gap-4">
+            <XCircle class="w-10 h-10 text-red-600" />
+            <div>
+              <h3 class="text-sm text-red-600">Out of Stock</h3>
+              <p class="text-3xl font-bold text-red-600">{{ outOfStock }}</p>
+            </div>
           </div>
-
-
         </div>
       </div>
 
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <div class="bg-white shadow-lg rounded-lg p-6 border-t-2 border-red-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-          <h2 class="text-xl font-bold mb-4">Monthly Sales</h2>
+        <!-- Status Chart -->
+        <div class="bg-white shadow rounded-lg p-6 border-t-2 border-red-600">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <PieChart class="w-6 h-6 text-red-600" />
+            Inventory Status
+          </h2>
 
-          <canvas id="salesChart" class="w-full h-64"></canvas>
+          <div class="chart-wrapper">
+            <canvas ref="statusChart"></canvas>
+          </div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6 border-t-2 border-red-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-          <h2 class="text-xl font-bold mb-4">Inventory Distribution</h2>
+        <!-- Category Chart -->
+        <div class="bg-white shadow rounded-lg p-6 border-t-2 border-red-600">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <BarChart3 class="w-6 h-6 text-red-600" />
+            Inventory by Category
+          </h2>
 
-          <canvas id="inventoryChart" class="w-full h-64"></canvas>
+          <div class="chart-wrapper">
+            <canvas ref="categoryChart"></canvas>
+          </div>
         </div>
-
 
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, nextTick } from "vue";
 import { useRouter } from "vue-router";
-import { auth } from "../../Firebase/Firebase";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../../Firebase/Firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 import Topbar from "../../components/Topbar.vue";
 
+/* 🔥 Lucide Icons */
+import {
+  LayoutDashboard,
+  Boxes,
+  Package,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  PieChart,
+  BarChart3,
+} from "lucide-vue-next";
+
+/* Chart.js */
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
 const router = useRouter();
-const userEmail = ref("");
 const isLoading = ref(true);
+const inventoryItems = ref([]);
 
-const inventoryItems = ref([
-  {
-    id: 1,
-    partCode: "ISZ-001",
-    partName: "Engine Oil Filter",
-    category: "Engine Parts",
-    quantity: 150,
-    minLevel: 50,
-    unitPrice: 1455,
-    status: "in-stock",
-  },
-  {
-    id: 2,
-    partCode: "ISZ-002",
-    partName: "Air Filter",
-    category: "Engine Parts",
-    quantity: 25,
-    minLevel: 50,
-    unitPrice: 894,
-    status: "low",
-  },
-  {
-    id: 3,
-    partCode: "ISZ-003",
-    partName: "Transmission Fluid",
-    category: "Transmission",
-    quantity: 80,
-    minLevel: 50,
-    unitPrice: 2575,
-    status: "in-stock",
-  },
-  {
-    id: 4,
-    partCode: "ISZ-004",
-    partName: "Brake Pads",
-    category: "Suspension",
-    quantity: 0,
-    minLevel: 30,
-    unitPrice: 4815,
-    status: "out",
-  },
-  {
-    id: 5,
-    partCode: "ISZ-005",
-    partName: "Battery",
-    category: "Electrical",
-    quantity: 45,
-    minLevel: 20,
-    unitPrice: 6775,
-    status: "in-stock",
-  },
-  {
-    id: 6,
-    partCode: "ISZ-006",
-    partName: "Door Handle",
-    category: "Body Parts",
-    quantity: 110,
-    minLevel: 40,
-    unitPrice: 2015,
-    status: "in-stock",
-  },
-  {
-    id: 7,
-    partCode: "ISZ-007",
-    partName: "Spark Plugs",
-    category: "Engine Parts",
-    quantity: 200,
-    minLevel: 100,
-    unitPrice: 727,
-    status: "in-stock",
-  },
-  {
-    id: 8,
-    partCode: "ISZ-008",
-    partName: "Alternator",
-    category: "Electrical",
-    quantity: 15,
-    minLevel: 25,
-    unitPrice: 14055,
-    status: "low",
-  },
-]);
+const statusChart = ref(null);
+const categoryChart = ref(null);
 
-onMounted(() => {
-  // Load and apply saved theme from localStorage
-  const savedTheme = localStorage.getItem("appTheme");
-  if (savedTheme) {
-    applyTheme(savedTheme);
-  }
+let statusChartInstance = null;
+let categoryChartInstance = null;
 
-  // Wait for Firebase to restore the user session
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    isLoading.value = false;
-    if (user) {
-      userEmail.value = user.email;
-      setTimeout(initCharts, 100);
-    } else {
-      router.push("/");
-    }
-  });
+/* ===== COUNTS ===== */
+const inStock = computed(() =>
+  inventoryItems.value.filter(i => i.status === "in-stock").length
+);
+const lowStock = computed(() =>
+  inventoryItems.value.filter(i => i.status === "low").length
+);
+const outOfStock = computed(() =>
+  inventoryItems.value.filter(i => i.status === "out").length
+);
 
-  // Cleanup subscription on unmount
-  return () => unsubscribe();
-});
-
-// Apply theme function
-const applyTheme = (theme) => {
-  const htmlElement = document.documentElement;
-  htmlElement.classList.remove("dark", "light");
-  if (theme === "dark") {
-    htmlElement.classList.add("dark");
-  } else if (theme === "light") {
-    htmlElement.classList.add("light");
-  }
+/* ===== LOAD INVENTORY ===== */
+const loadInventory = async (uid) => {
+  const snapshot = await getDocs(collection(db, "users", uid, "inventory"));
+  inventoryItems.value = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 };
 
-const logout = async () => {
-  await signOut(auth);
-  router.push("/");
-};
-
-const getInStockCount = () =>
-  inventoryItems.value.filter((i) => i.status === "in-stock").length;
-
-const getLowStockCount = () =>
-  inventoryItems.value.filter((i) => i.status === "low").length;
-
-const getOutOfStockCount = () =>
-  inventoryItems.value.filter((i) => i.status === "out").length;
-
+/* ===== INIT CHARTS ===== */
 const initCharts = () => {
-  // Detect dark mode
-  const isDarkMode = document.documentElement.classList.contains("dark");
-  const textColor = isDarkMode ? "#f3f4f6" : "#1f2937";
-  const gridColor = isDarkMode ? "#4b5563" : "#e5e7eb";
-  const backgroundColor = isDarkMode ? "#2d3748" : "#ffffff";
+  if (!statusChart.value || !categoryChart.value) return;
 
-  // Monthly Sales Chart
-  const salesCtx = document.getElementById("salesChart");
-  new Chart(salesCtx, {
-    type: "line",
+  statusChartInstance?.destroy();
+  categoryChartInstance?.destroy();
+
+  statusChartInstance = new Chart(statusChart.value, {
+    type: "doughnut",
     data: {
-      labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
+      labels: ["In Stock", "Low Stock", "Out of Stock"],
       datasets: [
         {
-          label: "Sales Units",
-          data: [10,25,15,30,40,35,50,45],
-          borderColor: "rgb(34,197,94)",
-          backgroundColor: "rgba(34,197,94,0.2)",
-          fill: true,
-          tension: 0.4,
+          data: [inStock.value, lowStock.value, outOfStock.value],
+          backgroundColor: ["#22c55e", "#eab308", "#ef4444"],
         },
       ],
     },
     options: {
       responsive: true,
-      plugins: { 
-        legend: { 
-          display: true,
-          labels: {
-            color: textColor,
-            font: { size: 14 }
-          }
-        }
-      },
-      scales: {
-        y: {
-          ticks: { color: textColor },
-          grid: { color: gridColor }
-        },
-        x: {
-          ticks: { color: textColor },
-          grid: { color: gridColor }
-        }
-      }
+      maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom" } },
     },
   });
 
-  new Chart(document.getElementById("inventoryChart"), {
-    type: "doughnut",
+  const categories = {};
+  inventoryItems.value.forEach(item => {
+    const cat = item.category || "Uncategorized";
+    categories[cat] = (categories[cat] || 0) + (item.quantity || 0);
+  });
+
+  categoryChartInstance = new Chart(categoryChart.value, {
+    type: "bar",
     data: {
-      labels: ["Trucks","SUVs","Pickups"],
+      labels: Object.keys(categories),
       datasets: [
         {
-          data: [450,300,500],
-          backgroundColor: [
-            "rgb(59,130,246)",
-            "rgb(16,185,129)",
-            "rgb(234,179,8)",
-          ],
-          hoverOffset: 10,
+          label: "Total Quantity",
+          data: Object.values(categories),
         },
       ],
     },
-    options: { 
+    options: {
       responsive: true,
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor,
-            font: { size: 14 }
-          }
-        }
-      }
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } },
     },
   });
 };
+
+/* ===== AUTH ===== */
+onMounted(() => {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      router.push("/");
+      return;
+    }
+
+    await loadInventory(user.uid);
+    isLoading.value = false;
+    await nextTick();
+    initCharts();
+  });
+});
 </script>
+
+<style scoped>
+.chart-wrapper {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+</style>
