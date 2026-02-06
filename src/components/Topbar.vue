@@ -5,7 +5,7 @@
 
         <!-- Logo / Brand -->
         <div class="text-xl font-bold">
-          MyApp
+          ISUZU
         </div>
 
         <!-- Desktop Menu (centered) -->

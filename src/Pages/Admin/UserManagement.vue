@@ -5,47 +5,78 @@
     <Topbar />
 
     <main class="flex-1 p-6">
-      <h1 class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4">User Management</h1>
+      <h1 class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4">
+        User Management
+      </h1>
 
-      <!-- Users Card -->
-      <div :class="cardClass" class="shadow-lg rounded-lg p-6 transition-colors duration-300 border-l-2 border-red-600 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+      <div
+        :class="cardClass"
+        class="shadow-lg rounded-lg p-6 border-l-2 border-red-600"
+      >
+        <h2 class="text-xl font-bold mb-4">Administrators</h2>
 
-        <h2 class="text-xl font-bold mb-4" :class="textClass">All Users</h2>
-
-        <!-- Users Table -->
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y transition-colors duration-300 border-t-2 border-red-600" :class="tableClass">
-            <thead :class="theadClass" class="border-b-2 border-red-600">
-
+          <table class="min-w-full divide-y border-t-2 border-red-600">
+            <thead class="bg-gray-50 border-b-2 border-red-600">
               <tr>
+                <th class="px-6 py-3 text-left text-sm font-medium">Name</th>
                 <th class="px-6 py-3 text-left text-sm font-medium">Username</th>
                 <th class="px-6 py-3 text-left text-sm font-medium">Email</th>
                 <th class="px-6 py-3 text-left text-sm font-medium">Role</th>
                 <th class="px-6 py-3 text-left text-sm font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody :class="tbodyClass">
-              <tr v-for="(user, index) in users" :key="user.id" :class="rowClass" class="hover:bg-red-50 hover:shadow-md transition-all duration-200">
-                <td class="px-6 py-4 text-sm">{{ user.username || user.name }}</td>
-                <td class="px-6 py-4 text-sm">{{ user.email }}</td>
+
+            <tbody>
+              <tr
+                v-for="admin in admins"
+                :key="admin.id"
+                class="hover:bg-gray-100"
+              >
                 <td class="px-6 py-4 text-sm">
-                  <select v-model="user.role" :class="inputClass" class="hover:border-red-400 hover:shadow-sm transition-all duration-200">
-                    <option v-for="role in roles" :key="role" :value="role">{{ role }}</option>
+                  {{ admin.firstName }} {{ admin.lastName }}
+                </td>
+
+                <td class="px-6 py-4 text-sm">
+                  {{ admin.username }}
+                </td>
+
+                <td class="px-6 py-4 text-sm">
+                  {{ admin.email }}
+                </td>
+
+                <td class="px-6 py-4 text-sm">
+                  <select
+                    v-model="admin.role"
+                    class="border rounded px-2 py-1 w-full"
+                  >
+                    <option disabled value="">Select role</option>
+                    <option v-for="role in roles" :key="role" :value="role">
+                      {{ role }}
+                    </option>
                   </select>
                 </td>
+
                 <td class="px-6 py-4 text-sm space-x-2">
                   <button
-                    @click="updateUser(user)"
-                    class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+                    @click="updateAdmin(admin)"
+                    class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                   >
                     Save
                   </button>
+
                   <button
-                    @click="deleteUser(user.id)"
-                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+                    @click="deleteAdmin(admin.id)"
+                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                   >
                     Delete
                   </button>
+                </td>
+              </tr>
+
+              <tr v-if="admins.length === 0">
+                <td colspan="5" class="text-center py-6 text-gray-500">
+                  No administrator records found
                 </td>
               </tr>
             </tbody>
@@ -58,15 +89,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { db } from "../../Firebase/Firebase";
-import { collection, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc
+} from "firebase/firestore";
 import Topbar from "../../components/Topbar.vue";
 
-// Users array
-const users = ref([]);
+/* =====================
+   DATA
+===================== */
+const admins = ref([]);
 
-// Roles
 const roles = [
   "Operation Manager",
   "Parts Supervisor",
@@ -75,59 +113,45 @@ const roles = [
   "Parts Warehouse"
 ];
 
-// Fetch users from Firestore
-const fetchUsers = async () => {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  users.value = querySnapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+/* =====================
+   FETCH ADMINISTRATORS
+===================== */
+const fetchAdmins = async () => {
+  const snapshot = await getDocs(collection(db, "Administrator")); // ✅ exact name
+  admins.value = snapshot.docs.map(d => ({
+    id: d.id,
+    role: d.data().role || "", // auto handle missing role
+    ...d.data()
+  }));
 };
 
-// Update user role
-const updateUser = async (user) => {
-  try {
-    const userRef = doc(db, "users", user.id);
-    await updateDoc(userRef, { role: user.role });
-    alert("User role updated!");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update user.");
-  }
+/* =====================
+   UPDATE ROLE
+===================== */
+const updateAdmin = async (admin) => {
+  await updateDoc(doc(db, "Administrator", admin.id), {
+    role: admin.role
+  });
+  alert("Role updated successfully");
 };
 
-// Delete user
-const deleteUser = async (id) => {
-  if (!confirm("Are you sure you want to delete this user?")) return;
-  try {
-    await deleteDoc(doc(db, "users", id));
-    users.value = users.value.filter(u => u.id !== id);
-    alert("User deleted!");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to delete user.");
-  }
+/* =====================
+   DELETE ADMIN
+===================== */
+const deleteAdmin = async (id) => {
+  if (!confirm("Delete this administrator?")) return;
+  await deleteDoc(doc(db, "Administrator", id));
+  admins.value = admins.value.filter(a => a.id !== id);
 };
 
-// Theme handling (light/dark)
-const settings = ref({ general: { theme: "light" } });
+/* =====================
+   THEME (STATIC)
+===================== */
+const themeClass = "bg-gray-100 text-gray-900";
+const cardClass = "bg-white";
 
-// Dynamic classes for theme
-const themeClass = computed(() => settings.value.general.theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-900");
-const cardClass = computed(() => settings.value.general.theme === "dark" ? "bg-gray-800" : "bg-white");
-const textClass = computed(() => settings.value.general.theme === "dark" ? "text-gray-100" : "text-gray-900");
-const tableClass = computed(() => settings.value.general.theme === "dark" ? "divide-gray-700" : "divide-gray-200");
-const theadClass = computed(() => settings.value.general.theme === "dark" ? "bg-gray-700 text-gray-100" : "bg-gray-50 text-gray-900");
-const tbodyClass = computed(() => settings.value.general.theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-900");
-const rowClass = computed(() => settings.value.general.theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100");
-const inputClass = computed(() => settings.value.general.theme === "dark" ? "w-full border rounded px-2 py-1 bg-gray-700 text-gray-100" : "w-full border rounded px-2 py-1 bg-white text-gray-900");
-
-// Fetch users on mount
-onMounted(() => fetchUsers());
+/* =====================
+   LIFECYCLE
+===================== */
+onMounted(fetchAdmins);
 </script>
-
-<style scoped>
-body {
-  font-family: "Inter", sans-serif;
-}
-table input, table select {
-  transition: all 0.2s;
-}
-</style>
