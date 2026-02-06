@@ -5,7 +5,8 @@
 
     <!-- Main Content -->
     <div class="p-6">
-      <h1 class="text-3xl font-bold mb-6 text-gray-800">Inventory Management</h1>
+      <h1 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4">Inventory Management</h1>
+
 
       <!-- Status Messages -->
       <div v-if="saveSuccess" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
@@ -16,7 +17,8 @@
       </div>
 
       <!-- Search and Filter Bar -->
-      <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+      <div class="bg-white shadow-lg rounded-lg p-6 mb-6 border-t-2 border-red-600">
+
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
           <!-- Search Box -->
@@ -76,31 +78,36 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
+        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer border-l-2 border-red-600">
+
           <p class="text-gray-600 text-sm">Total Parts</p>
           <p class="text-3xl font-bold text-gray-800">{{ inventoryItems.length }}</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
+        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer border-l-2 border-red-600">
           <p class="text-gray-600 text-sm">In Stock</p>
+
           <p class="text-3xl font-bold text-green-600">{{ getInStockCount() }}</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
+        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer border-l-2 border-red-600">
           <p class="text-gray-600 text-sm">Low Stock</p>
+
           <p class="text-3xl font-bold text-yellow-600">{{ getLowStockCount() }}</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
+        <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer border-l-2 border-red-600">
           <p class="text-gray-600 text-sm">Out of Stock</p>
+
           <p class="text-3xl font-bold text-red-600">{{ getOutOfStockCount() }}</p>
         </div>
       </div>
 
       <!-- Table -->
-      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="bg-white shadow-lg rounded-lg overflow-hidden border-t-2 border-red-600">
         <table class="w-full">
-          <thead class="bg-gray-200">
+          <thead class="bg-gray-200 border-b-2 border-red-600">
+
             <tr>
               <th class="px-6 py-3 text-left text-sm font-bold">Part Code</th>
               <th class="px-6 py-3 text-left text-sm font-bold">Part Name</th>
@@ -169,7 +176,8 @@
       </div>
 
       <!-- Pagination Controls -->
-      <div class="bg-white shadow-lg rounded-lg p-4 mt-4">
+      <div class="bg-white shadow-lg rounded-lg p-4 mt-4 border-l-2 border-red-600">
+
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
           
           <!-- Items per page selector -->

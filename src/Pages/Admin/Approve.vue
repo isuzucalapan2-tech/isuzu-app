@@ -7,15 +7,19 @@
     <!-- Content -->
     <div class="p-8">
 
-      <h1 class="text-2xl font-bold mb-6 text-gray-800">
+      <h1 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4">
         User Approval
       </h1>
 
-      <div class="border-2 border-black rounded-xl overflow-hidden">
+
+      <div class="border-2 border-black rounded-xl overflow-hidden border-t-4 border-t-red-600 hover:shadow-xl transition-all duration-300">
+
+
 
         <!-- Users Table -->
         <table class="w-full text-left">
-          <thead class="border-b-2 border-black bg-gray-100">
+          <thead class="border-b-2 border-red-600 bg-gray-100">
+
             <tr>
               <th class="p-3">Username</th>
               <th class="p-3">Email</th>
@@ -29,8 +33,9 @@
             <tr
               v-for="user in pendingUsers"
               :key="user.id"
-              class="border-b border-gray-300"
+              class="border-b border-gray-300 hover:bg-red-50 hover:shadow-md transition-all duration-200"
             >
+
               <td class="p-3">{{ user.username || "N/A" }}</td>
               <td class="p-3">{{ user.email || "N/A" }}</td>
 
@@ -38,8 +43,9 @@
               <td class="p-3">
                 <select
                   v-model="user.selectedRole"
-                  class="border border-black px-2 py-1 rounded w-full"
+                  class="border border-black px-2 py-1 rounded w-full hover:border-red-600 hover:shadow-sm transition-all duration-200"
                 >
+
                   <option disabled value="">Select Role</option>
                   <option>Parts Supervisor</option>
                   <option>Parts Marketing</option>
@@ -52,11 +58,12 @@
               <td class="p-3">
                 <button
                   @click="approveUser(user)"
-                  class="bg-gray-800 text-white px-4 py-1 rounded"
+                  class="bg-gray-800 text-white px-4 py-1 rounded hover:bg-red-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                 >
                   Approve
                 </button>
               </td>
+
             </tr>
 
             <!-- No Pending Users -->

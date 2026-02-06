@@ -8,15 +8,16 @@
 
     <!-- Main Content -->
     <main class="flex-1 overflow-auto p-6">
-      <h1 class="text-3xl font-bold mb-6">Settings</h1>
+      <h1 class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4">Settings</h1>
 
       <!-- Settings Tabs -->
       <div class="flex space-x-4 mb-6 border-b border-gray-300">
-        <button @click="activeTab = 'general'" :class="tabClass('general')">General</button>
-        <button @click="activeTab = 'inventory'" :class="tabClass('inventory')">Inventory</button>
-        <button @click="activeTab = 'notifications'" :class="tabClass('notifications')">Notifications</button>
-        <button @click="activeTab = 'warehouse'" :class="tabClass('warehouse')">Warehouse</button>
+        <button @click="activeTab = 'general'" :class="tabClass('general')" class="hover:bg-red-50 hover:text-red-600 transition-all duration-200 px-4 py-2 rounded-t">General</button>
+        <button @click="activeTab = 'inventory'" :class="tabClass('inventory')" class="hover:bg-red-50 hover:text-red-600 transition-all duration-200 px-4 py-2 rounded-t">Inventory</button>
+        <button @click="activeTab = 'notifications'" :class="tabClass('notifications')" class="hover:bg-red-50 hover:text-red-600 transition-all duration-200 px-4 py-2 rounded-t">Notifications</button>
+        <button @click="activeTab = 'warehouse'" :class="tabClass('warehouse')" class="hover:bg-red-50 hover:text-red-600 transition-all duration-200 px-4 py-2 rounded-t">Warehouse</button>
       </div>
+
 
       <!-- Loading State -->
       <div v-if="isSaving" class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4">
@@ -38,24 +39,24 @@
 
         <!-- General -->
         <div v-if="activeTab === 'general'">
-          <div :class="cardClass">
+          <div :class="cardClass" class="border-l-2 border-red-600 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
             <h2 class="text-xl font-bold mb-4">General Settings</h2>
             <div class="space-y-4">
               <div>
                 <label class="block mb-1">Company Name</label>
-                <input v-model="settings.general.companyName" type="text" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600"/>
+                <input v-model="settings.general.companyName" type="text" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
               <div>
                 <label class="block mb-1">Company Email</label>
-                <input v-model="settings.general.companyEmail" type="email" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600"/>
+                <input v-model="settings.general.companyEmail" type="email" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
               <div>
                 <label class="block mb-1">Phone Number</label>
-                <input v-model="settings.general.phone" type="tel" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600"/>
+                <input v-model="settings.general.phone" type="tel" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
               <div>
                 <label class="block mb-1">Language</label>
-                <select v-model="settings.general.language" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600">
+                <select v-model="settings.general.language" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600 hover:border-red-400 hover:shadow-sm transition-all duration-200">
                   <option value="en">English</option>
                   <option value="es">Spanish</option>
                   <option value="fr">French</option>
@@ -64,7 +65,7 @@
               </div>
               <div>
                 <label class="block mb-1">Theme</label>
-                <select v-model="settings.general.theme" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600">
+                <select v-model="settings.general.theme" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-600 hover:border-red-400 hover:shadow-sm transition-all duration-200">
                   <option value="light">Light</option>
                   <option value="dark">Dark</option>
                   <option value="auto">Auto</option>
@@ -73,7 +74,7 @@
               <button 
                 @click="saveSettings('general')" 
                 :disabled="isSaving"
-                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {{ isSaving ? 'Saving...' : 'Save General Settings' }}
               </button>
@@ -81,90 +82,94 @@
           </div>
         </div>
 
+
         <!-- Inventory -->
         <div v-if="activeTab === 'inventory'">
-          <div :class="cardClass">
+          <div :class="cardClass" class="border-l-2 border-red-600 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
             <h2 class="text-xl font-bold mb-4">Inventory Settings</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label>Low Stock Alert Threshold</label>
-                <input v-model.number="settings.inventory.lowStockThreshold" type="number" class="w-full border rounded px-4 py-2"/>
+                <input v-model.number="settings.inventory.lowStockThreshold" type="number" class="w-full border rounded px-4 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
               <div>
                 <label>Minimum Reorder Quantity</label>
-                <input v-model.number="settings.inventory.minReorderQty" type="number" class="w-full border rounded px-4 py-2"/>
+                <input v-model.number="settings.inventory.minReorderQty" type="number" class="w-full border rounded px-4 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
               <div>
                 <label>Default Reorder Quantity</label>
-                <input v-model.number="settings.inventory.defaultReorderQty" type="number" class="w-full border rounded px-4 py-2"/>
+                <input v-model.number="settings.inventory.defaultReorderQty" type="number" class="w-full border rounded px-4 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
               <div>
                 <label>Stock Check Interval (days)</label>
-                <input v-model.number="settings.inventory.stockCheckInterval" type="number" class="w-full border rounded px-4 py-2"/>
+                <input v-model.number="settings.inventory.stockCheckInterval" type="number" class="w-full border rounded px-4 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
               </div>
             </div>
             <div class="mt-4">
-              <label class="flex items-center">
-                <input v-model="settings.inventory.autoReorder" type="checkbox" class="mr-2"/>
+              <label class="flex items-center hover:text-red-600 transition-colors duration-200 cursor-pointer">
+                <input v-model="settings.inventory.autoReorder" type="checkbox" class="mr-2 w-5 h-5 hover:ring-2 hover:ring-red-400 transition-all duration-200"/>
                 Enable Auto Reorder
               </label>
             </div>
             <button 
               @click="saveSettings('inventory')" 
               :disabled="isSaving"
-              class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ isSaving ? 'Saving...' : 'Save Inventory Settings' }}
             </button>
           </div>
         </div>
 
+
         <!-- Notifications -->
         <div v-if="activeTab === 'notifications'">
-          <div :class="cardClass">
+          <div :class="cardClass" class="border-l-2 border-red-600 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
             <h2 class="text-xl font-bold mb-4">Notification Settings</h2>
             <div class="space-y-4">
-              <div v-for="(label, key) in notificationLabels" :key="key" class="flex justify-between items-center p-4 rounded" :class="settings.general.theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'">
+              <div v-for="(label, key) in notificationLabels" :key="key" class="flex justify-between items-center p-4 rounded hover:bg-red-50 hover:shadow-md transition-all duration-200 cursor-pointer" :class="settings.general.theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-50'">
                 <div>
                   <h3 class="font-medium">{{ label }}</h3>
                 </div>
-                <input type="checkbox" v-model="settings.notifications[key]" class="w-5 h-5"/>
+                <input type="checkbox" v-model="settings.notifications[key]" class="w-5 h-5 hover:ring-2 hover:ring-red-400 transition-all duration-200"/>
               </div>
             </div>
             <button 
               @click="saveSettings('notifications')" 
               :disabled="isSaving"
-              class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ isSaving ? 'Saving...' : 'Save Notification Settings' }}
             </button>
           </div>
         </div>
 
+
         <!-- Warehouse -->
         <div v-if="activeTab === 'warehouse'">
-          <div :class="cardClass">
+          <div :class="cardClass" class="border-l-2 border-red-600 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
             <h2 class="text-xl font-bold mb-4">Warehouse Locations</h2>
             <div class="space-y-4">
-              <div v-for="(wh, idx) in settings.warehouse.locations" :key="idx" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end p-4 rounded" :class="settings.general.theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'">
-                <input v-model="wh.name" placeholder="Warehouse Name" class="border rounded px-3 py-2"/>
-                <input v-model="wh.location" placeholder="Location" class="border rounded px-3 py-2"/>
+              <div v-for="(wh, idx) in settings.warehouse.locations" :key="idx" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end p-4 rounded hover:bg-red-50 hover:shadow-md transition-all duration-200" :class="settings.general.theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-50'">
+                <input v-model="wh.name" placeholder="Warehouse Name" class="border rounded px-3 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
+                <input v-model="wh.location" placeholder="Location" class="border rounded px-3 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
                 <div class="flex space-x-2">
-                  <input v-model.number="wh.capacity" type="number" placeholder="Capacity" class="border rounded px-3 py-2"/>
-                  <button @click="removeWarehouse(idx)" class="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 transition">Remove</button>
+                  <input v-model.number="wh.capacity" type="number" placeholder="Capacity" class="border rounded px-3 py-2 hover:border-red-400 hover:shadow-sm transition-all duration-200"/>
+                  <button @click="removeWarehouse(idx)" class="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">Remove</button>
                 </div>
               </div>
             </div>
-            <button @click="addWarehouse" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">+ Add Warehouse</button>
+            <button @click="addWarehouse" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">+ Add Warehouse</button>
             <button 
               @click="saveSettings('warehouse')" 
               :disabled="isSaving"
-              class="mt-4 ml-2 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              class="mt-4 ml-2 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ isSaving ? 'Saving...' : 'Save Warehouse Settings' }}
             </button>
           </div>
         </div>
+
 
       </div>
     </main>

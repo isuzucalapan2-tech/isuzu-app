@@ -8,7 +8,8 @@
 
     <!-- Scrollable Content -->
     <div class="flex-1 overflow-y-auto p-6">
-      <h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
+      <h1 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4">Dashboard</h1>
+
 
       <!-- User Info -->
       <div class="mb-6">
@@ -27,35 +28,42 @@
       <!-- Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
           <h2 class="text-xl font-bold mb-2">Total Vehicles</h2>
+
           <p class="text-3xl font-bold text-gray-800">1,250</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
           <h2 class="text-xl font-bold mb-2">Trucks</h2>
+
           <p class="text-3xl font-bold text-gray-800">450</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
           <h2 class="text-xl font-bold mb-2">SUVs</h2>
+
           <p class="text-3xl font-bold text-gray-800">300</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
           <h2 class="text-xl font-bold mb-2">Pickups</h2>
+
           <p class="text-3xl font-bold text-gray-800">500</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
           <h2 class="text-xl font-bold mb-2">Available Stock</h2>
+
           <p class="text-3xl font-bold text-gray-800">1,100</p>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
           <h2 class="text-xl font-bold mb-2">Sold Units</h2>
+
           <p class="text-3xl font-bold text-gray-800">150</p>
         </div>
+
 
       </div>
 
@@ -64,25 +72,30 @@
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Inventory Summary</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          <div class="bg-white shadow-lg rounded-lg p-6">
+          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
             <h3 class="text-gray-600 text-sm font-medium">Total Parts</h3>
+
             <p class="text-3xl font-bold text-gray-800">{{ inventoryItems.length }}</p>
           </div>
 
-          <div class="bg-white shadow-lg rounded-lg p-6">
+          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
             <h3 class="text-green-600 text-sm font-medium">In Stock</h3>
+
             <p class="text-3xl font-bold text-green-600">{{ getInStockCount() }}</p>
           </div>
 
-          <div class="bg-white shadow-lg rounded-lg p-6">
+          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
             <h3 class="text-yellow-600 text-sm font-medium">Low Stock</h3>
+
             <p class="text-3xl font-bold text-yellow-600">{{ getLowStockCount() }}</p>
           </div>
 
-          <div class="bg-white shadow-lg rounded-lg p-6">
+          <div class="bg-white shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl hover:scale-105 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
             <h3 class="text-red-600 text-sm font-medium">Out of Stock</h3>
+
             <p class="text-3xl font-bold text-red-600">{{ getOutOfStockCount() }}</p>
           </div>
+
 
         </div>
       </div>
@@ -90,15 +103,18 @@
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-t-2 border-red-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <h2 class="text-xl font-bold mb-4">Monthly Sales</h2>
+
           <canvas id="salesChart" class="w-full h-64"></canvas>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6 border-t-2 border-red-600 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
           <h2 class="text-xl font-bold mb-4">Inventory Distribution</h2>
+
           <canvas id="inventoryChart" class="w-full h-64"></canvas>
         </div>
+
 
       </div>
 

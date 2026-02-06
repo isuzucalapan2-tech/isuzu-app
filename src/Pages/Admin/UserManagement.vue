@@ -5,16 +5,18 @@
     <Topbar />
 
     <main class="flex-1 p-6">
-      <h1 class="text-3xl font-bold mb-6">User Management</h1>
+      <h1 class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4">User Management</h1>
 
       <!-- Users Card -->
-      <div :class="cardClass" class="shadow-lg rounded-lg p-6 transition-colors duration-300">
+      <div :class="cardClass" class="shadow-lg rounded-lg p-6 transition-colors duration-300 border-l-2 border-red-600 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+
         <h2 class="text-xl font-bold mb-4" :class="textClass">All Users</h2>
 
         <!-- Users Table -->
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y transition-colors duration-300" :class="tableClass">
-            <thead :class="theadClass">
+          <table class="min-w-full divide-y transition-colors duration-300 border-t-2 border-red-600" :class="tableClass">
+            <thead :class="theadClass" class="border-b-2 border-red-600">
+
               <tr>
                 <th class="px-6 py-3 text-left text-sm font-medium">Username</th>
                 <th class="px-6 py-3 text-left text-sm font-medium">Email</th>
@@ -23,24 +25,24 @@
               </tr>
             </thead>
             <tbody :class="tbodyClass">
-              <tr v-for="(user, index) in users" :key="user.id" :class="rowClass">
+              <tr v-for="(user, index) in users" :key="user.id" :class="rowClass" class="hover:bg-red-50 hover:shadow-md transition-all duration-200">
                 <td class="px-6 py-4 text-sm">{{ user.username || user.name }}</td>
                 <td class="px-6 py-4 text-sm">{{ user.email }}</td>
                 <td class="px-6 py-4 text-sm">
-                  <select v-model="user.role" :class="inputClass">
+                  <select v-model="user.role" :class="inputClass" class="hover:border-red-400 hover:shadow-sm transition-all duration-200">
                     <option v-for="role in roles" :key="role" :value="role">{{ role }}</option>
                   </select>
                 </td>
                 <td class="px-6 py-4 text-sm space-x-2">
                   <button
                     @click="updateUser(user)"
-                    class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                   >
                     Save
                   </button>
                   <button
                     @click="deleteUser(user.id)"
-                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                   >
                     Delete
                   </button>
@@ -129,4 +131,3 @@ table input, table select {
   transition: all 0.2s;
 }
 </style>
- 
