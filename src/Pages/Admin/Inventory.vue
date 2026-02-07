@@ -1,11 +1,14 @@
 <template>
-  <div v-if="!isLoading" class="min-h-screen bg-gray-100">
+  <div v-if="!isLoading" :class="themeClass" :style="themeStyle" class="min-h-screen">
+
+
     <!-- Topbar -->
     <Topbar />
 
     <!-- Main Content -->
     <div class="p-6">
-      <h1 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4 flex items-center gap-2">
+      <h1 :class="textClass" class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4 flex items-center gap-2">
+
         <PackageIcon class="w-6 h-6 text-red-600" /> Inventory Management
       </h1>
 
@@ -18,13 +21,16 @@
       </div>
 
       <!-- Search and Filter Bar -->
-      <div class="bg-white shadow-lg rounded-lg p-6 mb-6 border-t-2 border-red-600">
+      <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg p-6 mb-6 border-t-2 border-red-600">
+
+
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Search Box -->
           <div>
-            <label class="block text-gray-700 font-medium mb-2 flex items-center gap-1">
+            <label :class="labelClass" class="block font-medium mb-2 flex items-center gap-1">
               <SearchIcon class="w-5 h-5" /> Search Parts
             </label>
+
             <input
               v-model="searchQuery"
               type="text"
@@ -35,9 +41,10 @@
 
           <!-- Category Filter -->
           <div>
-            <label class="block text-gray-700 font-medium mb-2 flex items-center gap-1">
+            <label :class="labelClass" class="block font-medium mb-2 flex items-center gap-1">
               <LayersIcon class="w-5 h-5" /> Category
             </label>
+
             <select
               v-model="filterCategory"
               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
@@ -53,9 +60,10 @@
 
           <!-- Stock Status Filter -->
           <div>
-            <label class="block text-gray-700 font-medium mb-2 flex items-center gap-1">
+            <label :class="labelClass" class="block font-medium mb-2 flex items-center gap-1">
               <ActivityIcon class="w-5 h-5" /> Stock Status
             </label>
+
             <select
               v-model="filterStatus"
               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
@@ -82,43 +90,56 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
+        <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
+
+
           <BoxIcon class="w-6 h-6 text-gray-600" />
           <div>
-            <p class="text-gray-600 text-sm">Total Parts</p>
-            <p class="text-3xl font-bold text-gray-800">{{ inventoryItems.length }}</p>
+            <p :class="subTextClass" class="text-sm">Total Parts</p>
+            <p :class="textClass" class="text-3xl font-bold">{{ inventoryItems.length }}</p>
+
           </div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
+        <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
           <CheckCircle2Icon class="w-6 h-6 text-green-600" />
+
           <div>
-            <p class="text-gray-600 text-sm">In Stock</p>
+            <p :class="subTextClass" class="text-sm">In Stock</p>
+
             <p class="text-3xl font-bold text-green-600">{{ getInStockCount() }}</p>
           </div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
+        <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
           <AlertTriangleIcon class="w-6 h-6 text-yellow-600" />
+
           <div>
-            <p class="text-gray-600 text-sm">Low Stock</p>
+            <p :class="subTextClass" class="text-sm">Low Stock</p>
+
             <p class="text-3xl font-bold text-yellow-600">{{ getLowStockCount() }}</p>
           </div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
+
+        <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg p-4 border-l-2 border-red-600 flex items-center gap-2">
+
+
           <XCircleIcon class="w-6 h-6 text-red-600" />
           <div>
-            <p class="text-gray-600 text-sm">Out of Stock</p>
+            <p :class="subTextClass" class="text-sm">Out of Stock</p>
+
             <p class="text-3xl font-bold text-red-600">{{ getOutOfStockCount() }}</p>
           </div>
         </div>
       </div>
 
       <!-- Table -->
-      <div class="bg-white shadow-lg rounded-lg overflow-hidden border-t-2 border-red-600">
+      <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg overflow-hidden border-t-2 border-red-600">
+
         <table class="w-full">
-          <thead class="bg-gray-200 border-b-2 border-red-600">
+          <thead :class="tableHeaderClass" class="border-b-2 border-red-600">
+
             <tr>
               <th class="px-6 py-3 text-left text-sm font-bold">Part Code</th>
               <th class="px-6 py-3 text-left text-sm font-bold">Part Name</th>
@@ -131,14 +152,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in paginatedInventory" :key="item.id" class="border-b">
-              <td class="px-6 py-4 font-medium text-gray-700">{{ item.partCode }}</td>
-              <td class="px-6 py-4 font-medium text-gray-800">{{ item.partName }}</td>
+            <tr v-for="item in paginatedInventory" :key="item.id" :class="tableRowClass" class="border-b hover:bg-red-50 transition-colors duration-200">
+              <td :class="textClass" class="px-6 py-4 font-medium">{{ item.partCode }}</td>
+              <td :class="textClass" class="px-6 py-4 font-medium">{{ item.partName }}</td>
+
               <td class="px-6 py-4">
                 <span class="inline-block px-2 py-1 bg-gray-100 rounded-md text-sm text-gray-600">{{ item.category }}</span>
               </td>
-              <td class="px-6 py-4 font-bold text-gray-800">{{ item.quantity }}</td>
-              <td class="px-6 py-4 text-gray-600">{{ item.minLevel }}</td>
+              <td :class="textClass" class="px-6 py-4 font-bold">{{ item.quantity }}</td>
+              <td :class="subTextClass" class="px-6 py-4">{{ item.minLevel }}</td>
+
               <td class="px-6 py-4">
                 <span
                   :class="[
@@ -153,7 +176,8 @@
                   {{ item.status }}
                 </span>
               </td>
-              <td class="px-6 py-4 font-semibold text-gray-700">₱{{ item.unitPrice.toFixed(2) }}</td>
+              <td :class="textClass" class="px-6 py-4 font-semibold">₱{{ item.unitPrice.toFixed(2) }}</td>
+
               <td class="px-6 py-4 space-x-2 flex">
                 <button @click="editPart(item)" :disabled="isSaving" class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50 flex items-center gap-1">
                   <Edit2Icon class="w-4 h-4" /> Edit
@@ -168,10 +192,12 @@
       </div>
 
       <!-- Pagination Controls -->
-      <div class="bg-white shadow-lg rounded-lg p-4 mt-4 border-l-2 border-red-600">
+      <div :class="cardClass" :style="cardStyle" class="shadow-lg rounded-lg p-4 mt-4 border-l-2 border-red-600">
+
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-2">
-            <span class="text-gray-600 text-sm">Items per page:</span>
+            <span :class="subTextClass" class="text-sm">Items per page:</span>
+
             <select
               v-model="itemsPerPage"
               @change="currentPage = 1"
@@ -181,11 +207,12 @@
             </select>
           </div>
 
-          <div class="text-gray-600 text-sm">
+          <div :class="subTextClass" class="text-sm">
             Showing {{ ((currentPage - 1) * itemsPerPage) + 1 }} - 
             {{ Math.min(currentPage * itemsPerPage, filteredInventory.length) }} 
             of {{ filteredInventory.length }} items
           </div>
+
 
           <div class="flex items-center gap-1">
             <button @click="currentPage = 1" :disabled="currentPage === 1" class="px-3 py-1 rounded-lg text-sm font-medium bg-gray-200 text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">&laquo;</button>
@@ -206,7 +233,50 @@ import { useRouter } from "vue-router";
 import { auth, db } from "../../Firebase/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
-import Topbar from "../../Components/Topbar.vue";
+import Topbar from "../../components/Topbar.vue";
+
+// Theme detection
+const isDarkMode = computed(() => {
+  return document.documentElement.classList.contains('dark');
+});
+
+const themeClass = computed(() => 
+  isDarkMode.value ? 'text-white' : 'bg-gray-100 text-gray-900'
+);
+
+const themeStyle = computed(() => 
+  isDarkMode.value ? { backgroundColor: '#232323' } : {}
+);
+
+const cardClass = computed(() => 
+  isDarkMode.value ? 'text-white' : 'bg-white text-gray-900'
+);
+
+const cardStyle = computed(() => 
+  isDarkMode.value ? { backgroundColor: '#2a2a2a' } : {}
+);
+
+
+const textClass = computed(() => 
+  isDarkMode.value ? 'text-white' : 'text-gray-800'
+);
+
+const subTextClass = computed(() => 
+  isDarkMode.value ? 'text-gray-300' : 'text-gray-600'
+);
+
+const labelClass = computed(() => 
+  isDarkMode.value ? 'text-gray-300' : 'text-gray-700'
+);
+
+const tableHeaderClass = computed(() => 
+  isDarkMode.value ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-900'
+);
+
+const tableRowClass = computed(() => 
+  isDarkMode.value ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+);
+
 
 // Lucide icons
 import { 

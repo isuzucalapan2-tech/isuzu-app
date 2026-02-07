@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-white">
+  <div :class="themeClass" :style="themeStyle" class="min-h-screen">
+
+
 
     <!-- Topbar -->
     <Topbar />
@@ -7,18 +9,21 @@
     <!-- Content -->
     <div class="p-8">
 
-      <h1 class="text-2xl font-bold mb-6 text-gray-800 border-l-4 border-red-600 pl-4">
+      <h1 :class="textClass" class="text-2xl font-bold mb-6 border-l-4 border-red-600 pl-4">
         User Approval
       </h1>
 
 
-      <div class="border-2 border-black rounded-xl overflow-hidden border-t-4 border-t-red-600 hover:shadow-xl transition-all duration-300">
+      <div :class="cardClass" :style="cardStyle" class="border-2 rounded-xl overflow-hidden border-t-4 border-t-red-600 hover:shadow-xl transition-all duration-300">
+
+
 
 
 
         <!-- Users Table -->
         <table class="w-full text-left">
-          <thead class="border-b-2 border-red-600 bg-gray-100">
+          <thead :class="tableHeaderClass" class="border-b-2 border-red-600">
+
 
             <tr>
               <th class="p-3">Username</th>
@@ -33,11 +38,13 @@
             <tr
               v-for="user in pendingUsers"
               :key="user.id"
-              class="border-b border-gray-300 hover:bg-red-50 hover:shadow-md transition-all duration-200"
+              :class="rowHoverClass"
+              class="border-b border-gray-300 hover:shadow-md transition-all duration-200"
             >
 
-              <td class="p-3">{{ user.username || "N/A" }}</td>
-              <td class="p-3">{{ user.email || "N/A" }}</td>
+              <td :class="textClass" class="p-3">{{ user.username || "N/A" }}</td>
+              <td :class="textClass" class="p-3">{{ user.email || "N/A" }}</td>
+
 
               <!-- Role Selector -->
               <td class="p-3">
@@ -68,10 +75,11 @@
 
             <!-- No Pending Users -->
             <tr v-if="pendingUsers.length === 0">
-              <td colspan="4" class="text-center p-6 text-gray-500">
+              <td colspan="4" :class="subTextClass" class="text-center p-6">
                 No pending users
               </td>
             </tr>
+
           </tbody>
         </table>
 
@@ -82,8 +90,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import Topbar from "../../Components/Topbar.vue";
+import { ref, onMounted, computed } from "vue";
+import Topbar from "../../components/Topbar.vue";
+
 
 import {
   collection,
@@ -150,10 +159,49 @@ const approveUser = async (user) => {
   }
 };
 
+// Theme detection
+const isDarkMode = computed(() => {
+  return document.documentElement.classList.contains('dark');
+});
+
+const themeClass = computed(() => 
+  isDarkMode.value ? 'text-white' : 'bg-white text-gray-800'
+);
+
+const themeStyle = computed(() => 
+  isDarkMode.value ? { backgroundColor: '#232323' } : {}
+);
+
+const cardClass = computed(() => 
+  isDarkMode.value ? 'border-gray-600' : 'bg-white border-black'
+);
+
+const cardStyle = computed(() => 
+  isDarkMode.value ? { backgroundColor: '#2a2a2a' } : {}
+);
+
+
+const tableHeaderClass = computed(() => 
+  isDarkMode.value ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'
+);
+
+const textClass = computed(() => 
+  isDarkMode.value ? 'text-white' : 'text-gray-800'
+);
+
+const subTextClass = computed(() => 
+  isDarkMode.value ? 'text-gray-300' : 'text-gray-500'
+);
+
+const rowHoverClass = computed(() => 
+  isDarkMode.value ? 'hover:bg-gray-700' : 'hover:bg-red-50'
+);
+
 onMounted(() => {
   loadPendingUsers();
 });
 </script>
+
 
 <style scoped>
 body {

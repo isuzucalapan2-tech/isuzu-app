@@ -1,5 +1,6 @@
 <template>
-  <div v-if="!isLoading" :class="themeClass" class="min-h-screen flex flex-col">
+  <div v-if="!isLoading" :class="themeClass" :style="themeStyle" class="min-h-screen flex flex-col">
+
 
     <!-- Topbar (sticky) -->
     <div class="sticky top-0 z-50">
@@ -57,7 +58,8 @@
 
         <!-- General -->
         <div v-if="activeTab === 'general'">
-          <div :class="cardClass" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <UserCogIcon class="w-5 h-5" /> General Settings
             </h2>
@@ -104,7 +106,8 @@
 
         <!-- Inventory -->
         <div v-if="activeTab === 'inventory'">
-          <div :class="cardClass" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <PackageIcon class="w-5 h-5" /> Inventory Settings
             </h2>
@@ -130,7 +133,8 @@
 
         <!-- Notifications -->
         <div v-if="activeTab === 'notifications'">
-          <div :class="cardClass" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <BellRingIcon class="w-5 h-5" /> Notification Settings
             </h2>
@@ -148,7 +152,8 @@
 
         <!-- Warehouse -->
         <div v-if="activeTab === 'warehouse'">
-          <div :class="cardClass" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <MapPinIcon class="w-5 h-5" /> Warehouse Locations
             </h2>
@@ -180,7 +185,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
+
 import { useRouter } from "vue-router";
 import { auth, db } from "../../Firebase/Firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -221,15 +227,48 @@ const notificationLabels = {
 
 const themeClass = computed(() =>
   settings.value.general.theme === "dark"
-    ? "bg-gray-900 text-white"
+    ? "text-white"
     : "bg-gray-100 text-gray-900"
+);
+
+const themeStyle = computed(() =>
+  settings.value.general.theme === "dark"
+    ? { backgroundColor: '#232323' }
+    : {}
 );
 
 const cardClass = computed(() =>
   settings.value.general.theme === "dark"
-    ? "bg-gray-800 p-6 rounded shadow"
+    ? "p-6 rounded shadow"
     : "bg-white p-6 rounded shadow"
 );
+
+const cardStyle = computed(() =>
+  settings.value.general.theme === "dark"
+    ? { backgroundColor: '#2a2a2a' }
+    : {}
+);
+
+
+// Apply theme globally
+const applyTheme = (theme) => {
+  const html = document.documentElement;
+  html.classList.remove('dark', 'light');
+  
+  if (theme === 'dark') {
+    html.classList.add('dark');
+  } else if (theme === 'light') {
+    html.classList.add('light');
+  } else if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.add('light');
+    }
+  }
+  localStorage.setItem('appTheme', theme);
+};
 
 const saveSettings = async () => {
   isSaving.value = true;
@@ -238,6 +277,7 @@ const saveSettings = async () => {
   saveSuccess.value = true;
   setTimeout(() => (saveSuccess.value = false), 3000);
 };
+
 
 const addWarehouse = () => {
   settings.value.warehouse.locations.push({ name: "", location: "", capacity: 0 });
@@ -257,10 +297,20 @@ onMounted(() => {
     if (!user) return router.push("/");
     currentUser.value = user;
     const snap = await getDoc(doc(db, "users", user.uid, "settings", "preferences"));
-    if (snap.exists()) settings.value = snap.data();
+    if (snap.exists()) {
+      settings.value = snap.data();
+      // Apply loaded theme
+      applyTheme(settings.value.general.theme);
+    }
     isLoading.value = false;
   });
 });
+
+// Watch for theme changes and apply immediately
+watch(() => settings.value.general.theme, (newTheme) => {
+  applyTheme(newTheme);
+});
+
 
 const tabClass = (tab) =>
   activeTab.value === tab
