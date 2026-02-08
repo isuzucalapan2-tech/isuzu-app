@@ -80,12 +80,6 @@
                 <option value="de">German</option>
               </select>
 
-              <select v-model="settings.general.theme" class="w-full border rounded px-4 py-2">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="auto">Auto</option>
-              </select>
-
               <button @click="saveSettings" class="bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2">
                 <SaveIcon class="w-5 h-5" /> Save General Settings
               </button>
@@ -270,8 +264,14 @@ onMounted(() => {
   });
 });
 
-const tabClass = (tab) =>
+const tabClass = (tab) => {
   activeTab.value === tab
     ? "text-blue-600 border-b-2 border-blue-600"
     : "text-gray-600";
+};
+
 </script>
+
+
+
+
