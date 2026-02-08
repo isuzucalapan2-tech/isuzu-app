@@ -9,43 +9,43 @@
         </div>
 
         <!-- Desktop Menu (centered) -->
-        <div class="hidden md:flex flex-1 justify-center space-x-6">
+        <div class="hidden md:flex flex-1 justify-center space-x-8">
           <router-link
             to="/dashboard"
-            class="hover:text-neutral-300 transition"
-            active-class="font-bold underline underline-offset-4"
+            class="nav-link"
+            active-class="nav-link-active"
           >
             Dashboard
           </router-link>
 
           <router-link
             to="/user-management"
-            class="hover:text-neutral-300 transition"
-            active-class="font-bold underline underline-offset-4"
+            class="nav-link"
+            active-class="nav-link-active"
           >
             User Management
           </router-link>
 
-          <router-link
+          <!-- <router-link
             to="/approve"
-            class="hover:text-neutral-300 transition"
-            active-class="font-bold underline underline-offset-4"
+            class="nav-link"
+            active-class="nav-link-active"
           >
             Approve
-          </router-link>
+          </router-link> -->
 
           <router-link
             to="/inventory"
-            class="hover:text-neutral-300 transition"
-            active-class="font-bold underline underline-offset-4"
+            class="nav-link"
+            active-class="nav-link-active"
           >
             Inventory
           </router-link>
 
           <router-link
             to="/settings"
-            class="hover:text-neutral-300 transition"
-            active-class="font-bold underline underline-offset-4"
+            class="nav-link"
+            active-class="nav-link-active"
           >
             Settings
           </router-link>
@@ -71,31 +71,36 @@
     <div v-if="isOpen" class="md:hidden bg-neutral-800 px-4 pb-4">
       <router-link
         to="/dashboard"
-        class="block py-2 hover:text-neutral-300"
+        class="block py-2 nav-link"
+        active-class="nav-link-active"
         @click="isOpen = false"
       >Dashboard</router-link>
 
       <router-link
         to="/user-management"
-        class="block py-2 hover:text-neutral-300"
+        class="block py-2 nav-link"
+        active-class="nav-link-active"
         @click="isOpen = false"
       >User Management</router-link>
 
       <router-link
         to="/approve"
-        class="block py-2 hover:text-neutral-300"
+        class="block py-2 nav-link"
+        active-class="nav-link-active"
         @click="isOpen = false"
       >Approve</router-link>
 
       <router-link
         to="/inventory"
-        class="block py-2 hover:text-neutral-300"
+        class="block py-2 nav-link"
+        active-class="nav-link-active"
         @click="isOpen = false"
       >Inventory</router-link>
 
       <router-link
         to="/settings"
-        class="block py-2 hover:text-neutral-300"
+        class="block py-2 nav-link"
+        active-class="nav-link-active"
         @click="isOpen = false"
       >Settings</router-link>
     </div>
@@ -109,7 +114,35 @@ const isOpen = ref(false);
 </script>
 
 <style scoped>
-router-link {
-  transition: all 0.2s ease;
+/* default link */
+.nav-link {
+  position: relative;
+  padding: 0.25rem 0;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+/* hover effect */
+.nav-link:hover {
+  color: #d4d4d4;
+}
+
+/* ACTIVE / SELECTED */
+.nav-link-active {
+  color: #ef4444; /* red-500 */
+  font-weight: 700;
+}
+
+/* underline bar animation */
+.nav-link-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 3px;
+  background-color: #ef4444;
+  border-radius: 9999px;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
 }
 </style>

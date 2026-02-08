@@ -1,14 +1,19 @@
 <template>
-  <div :class="themeClass" :style="themeStyle" class="min-h-screen flex flex-col">
+  <!-- 🔧 LOADING -->
+  <div v-if="isLoading" class="min-h-screen flex items-center justify-center">
+    <Loaders />
+  </div>
 
+  <!-- MAIN CONTENT -->
+  <div v-else :class="themeClass" :style="themeStyle" class="min-h-screen flex flex-col">
 
     <!-- Topbar -->
     <Topbar />
 
     <main class="flex-1 p-6">
       <!-- Page Title -->
-      <h1 :class="textClass" class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4 flex items-center gap-2">
-
+      <h1 :class="textClass"
+        class="text-3xl font-bold mb-6 border-l-4 border-red-600 pl-4 flex items-center gap-2">
         <Users class="w-7 h-7 text-red-600" />
         User Management
       </h1>
@@ -21,7 +26,6 @@
 
         <!-- Card Title -->
         <h2 :class="textClass" class="text-xl font-bold mb-4 flex items-center gap-2">
-
           <Shield class="w-6 h-6 text-red-600" />
           Administrators
         </h2>
@@ -29,40 +33,34 @@
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y border-t-2 border-red-600">
             <thead :class="tableHeaderClass" class="border-b-2 border-red-600">
-
               <tr>
                 <th class="px-6 py-3 text-left text-sm font-medium">
                   <div class="flex items-center gap-2">
-                    <User class="w-4 h-4" />
-                    Name
+                    <User class="w-4 h-4" /> Name
                   </div>
                 </th>
 
                 <th class="px-6 py-3 text-left text-sm font-medium">
                   <div class="flex items-center gap-2">
-                    <AtSign class="w-4 h-4" />
-                    Username
+                    <AtSign class="w-4 h-4" /> Username
                   </div>
                 </th>
 
                 <th class="px-6 py-3 text-left text-sm font-medium">
                   <div class="flex items-center gap-2">
-                    <Mail class="w-4 h-4" />
-                    Email
+                    <Mail class="w-4 h-4" /> Email
                   </div>
                 </th>
 
                 <th class="px-6 py-3 text-left text-sm font-medium">
                   <div class="flex items-center gap-2">
-                    <Briefcase class="w-4 h-4" />
-                    Role
+                    <Briefcase class="w-4 h-4" /> Role
                   </div>
                 </th>
 
                 <th class="px-6 py-3 text-left text-sm font-medium">
                   <div class="flex items-center gap-2">
-                    <Settings class="w-4 h-4" />
-                    Actions
+                    <Settings class="w-4 h-4" /> Actions
                   </div>
                 </th>
               </tr>
@@ -75,7 +73,6 @@
                 :class="tableRowClass"
                 class="transition"
               >
-
                 <td :class="textClass" class="px-6 py-4 text-sm">
                   {{ admin.firstName }} {{ admin.lastName }}
                 </td>
@@ -88,12 +85,8 @@
                   {{ admin.email }}
                 </td>
 
-
                 <td class="px-6 py-4 text-sm">
-                  <select
-                    v-model="admin.role"
-                    class="border rounded px-2 py-1 w-full"
-                  >
+                  <select v-model="admin.role" class="border rounded px-2 py-1 w-full">
                     <option disabled value="">Select role</option>
                     <option v-for="role in roles" :key="role" :value="role">
                       {{ role }}
@@ -106,16 +99,14 @@
                     @click="updateAdmin(admin)"
                     class="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
                   >
-                    <Save class="w-4 h-4" />
-                    Save
+                    <Save class="w-4 h-4" /> Save
                   </button>
 
                   <button
                     @click="deleteAdmin(admin.id)"
                     class="flex items-center gap-1 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
                   >
-                    <Trash2 class="w-4 h-4" />
-                    Delete
+                    <Trash2 class="w-4 h-4" /> Delete
                   </button>
                 </td>
               </tr>
@@ -140,7 +131,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-
 import { db } from "../../Firebase/Firebase";
 import {
   collection,
@@ -149,9 +139,12 @@ import {
   deleteDoc,
   doc
 } from "firebase/firestore";
-import Topbar from "../../components/Topbar.vue";
 
-/* 🔥 Lucide Icons */
+import Topbar from "../../components/Topbar.vue";
+/* 🔧 ADDED */
+import Loaders from "../../components/Loaders.vue";
+
+/* ICONS */
 import {
   Users,
   User,
@@ -169,6 +162,7 @@ import {
    DATA
 ===================== */
 const admins = ref([]);
+const isLoading = ref(true);
 
 const roles = [
   "Operation Manager",
@@ -188,6 +182,7 @@ const fetchAdmins = async () => {
     role: d.data().role || "",
     ...d.data()
   }));
+  isLoading.value = false; // 🔧 ADDED
 };
 
 /* =====================
@@ -212,43 +207,41 @@ const deleteAdmin = async (id) => {
 /* =====================
    THEME
 ===================== */
-const isDarkMode = computed(() => {
-  return document.documentElement.classList.contains('dark');
-});
-
-const themeClass = computed(() => 
-  isDarkMode.value ? 'text-white' : 'bg-gray-100 text-gray-900'
+const isDarkMode = computed(() =>
+  document.documentElement.classList.contains("dark")
 );
 
-const themeStyle = computed(() => 
-  isDarkMode.value ? { backgroundColor: '#232323' } : {}
+const themeClass = computed(() =>
+  isDarkMode.value ? "text-white" : "bg-gray-100 text-gray-900"
 );
 
-const cardClass = computed(() => 
-  isDarkMode.value ? 'text-white' : 'bg-white text-gray-900'
+const themeStyle = computed(() =>
+  isDarkMode.value ? { backgroundColor: "#232323" } : {}
 );
 
-const cardStyle = computed(() => 
-  isDarkMode.value ? { backgroundColor: '#2a2a2a' } : {}
+const cardClass = computed(() =>
+  isDarkMode.value ? "text-white" : "bg-white text-gray-900"
 );
 
-
-const textClass = computed(() => 
-  isDarkMode.value ? 'text-white' : 'text-gray-900'
+const cardStyle = computed(() =>
+  isDarkMode.value ? { backgroundColor: "#2a2a2a" } : {}
 );
 
-const subTextClass = computed(() => 
-  isDarkMode.value ? 'text-gray-300' : 'text-gray-500'
+const textClass = computed(() =>
+  isDarkMode.value ? "text-white" : "text-gray-900"
 );
 
-const tableHeaderClass = computed(() => 
-  isDarkMode.value ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900'
+const subTextClass = computed(() =>
+  isDarkMode.value ? "text-gray-300" : "text-gray-500"
 );
 
-const tableRowClass = computed(() => 
-  isDarkMode.value ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+const tableHeaderClass = computed(() =>
+  isDarkMode.value ? "bg-gray-700 text-white" : "bg-gray-50 text-gray-900"
 );
 
+const tableRowClass = computed(() =>
+  isDarkMode.value ? "hover:bg-gray-700" : "hover:bg-gray-100"
+);
 
 /* =====================
    LIFECYCLE
