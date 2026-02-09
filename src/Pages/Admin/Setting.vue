@@ -237,10 +237,31 @@ const cardStyle = computed(() =>
     : {}
 );
 
+/* ===== THEME APPLICATION ===== */
+const applyTheme = (theme) => {
+  const html = document.documentElement;
+  html.classList.remove('dark', 'light');
+
+  if (theme === 'dark') {
+    html.classList.add('dark');
+  } else if (theme === 'light') {
+    html.classList.add('light');
+  } else if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.add('light');
+    }
+  }
+  localStorage.setItem('appTheme', theme);
+};
+
 /* ===== METHODS ===== */
 const saveSettings = async () => {
   isSaving.value = true;
   await setDoc(doc(db, "users", currentUser.value.uid, "settings", "preferences"), settings.value);
+  applyTheme(settings.value.general.theme); // Apply theme after saving
   isSaving.value = false;
   saveSuccess.value = true;
   setTimeout(() => (saveSuccess.value = false), 3000);

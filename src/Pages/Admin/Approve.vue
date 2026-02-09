@@ -159,41 +159,61 @@ const approveUser = async (user) => {
   }
 };
 
+// Theme application
+const applyTheme = (theme) => {
+  const html = document.documentElement;
+  html.classList.remove('dark', 'light');
+
+  if (theme === 'dark') {
+    html.classList.add('dark');
+  } else if (theme === 'light') {
+    html.classList.add('light');
+  } else if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.add('light');
+    }
+  }
+  localStorage.setItem('appTheme', theme);
+};
+
 // Theme detection
 const isDarkMode = computed(() => {
   return document.documentElement.classList.contains('dark');
 });
 
-const themeClass = computed(() => 
+const themeClass = computed(() =>
   isDarkMode.value ? 'text-white' : 'bg-white text-gray-800'
 );
 
-const themeStyle = computed(() => 
+const themeStyle = computed(() =>
   isDarkMode.value ? { backgroundColor: '#232323' } : {}
 );
 
-const cardClass = computed(() => 
+const cardClass = computed(() =>
   isDarkMode.value ? 'border-gray-600' : 'bg-white border-black'
 );
 
-const cardStyle = computed(() => 
+const cardStyle = computed(() =>
   isDarkMode.value ? { backgroundColor: '#2a2a2a' } : {}
 );
 
 
-const tableHeaderClass = computed(() => 
+const tableHeaderClass = computed(() =>
   isDarkMode.value ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'
 );
 
-const textClass = computed(() => 
+const textClass = computed(() =>
   isDarkMode.value ? 'text-white' : 'text-gray-800'
 );
 
-const subTextClass = computed(() => 
+const subTextClass = computed(() =>
   isDarkMode.value ? 'text-gray-300' : 'text-gray-500'
 );
 
-const rowHoverClass = computed(() => 
+const rowHoverClass = computed(() =>
   isDarkMode.value ? 'hover:bg-gray-700' : 'hover:bg-red-50'
 );
 

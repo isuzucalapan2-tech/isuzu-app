@@ -122,6 +122,26 @@ import {
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
+/* ===== THEME APPLICATION ===== */
+const applyTheme = (theme) => {
+  const html = document.documentElement;
+  html.classList.remove('dark', 'light');
+
+  if (theme === 'dark') {
+    html.classList.add('dark');
+  } else if (theme === 'light') {
+    html.classList.add('light');
+  } else if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.add('light');
+    }
+  }
+  localStorage.setItem('appTheme', theme);
+};
+
 /* ===== THEME ===== */
 const isDarkMode = computed(() => document.documentElement.classList.contains('dark'));
 const themeClass = computed(() => isDarkMode.value ? 'text-white' : 'bg-gray-100 text-gray-900');

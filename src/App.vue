@@ -29,11 +29,10 @@ const themeStyle = computed(() =>
 );
 
 // Apply theme globally
-
 const applyTheme = (theme) => {
   const html = document.documentElement;
   html.classList.remove('dark', 'light');
-  
+
   if (theme === 'dark') {
     html.classList.add('dark');
   } else if (theme === 'light') {
@@ -47,6 +46,7 @@ const applyTheme = (theme) => {
       html.classList.add('light');
     }
   }
+  localStorage.setItem('appTheme', theme);
 };
 
 // Load and apply saved theme on mount
