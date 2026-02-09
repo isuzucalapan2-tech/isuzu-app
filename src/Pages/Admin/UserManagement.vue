@@ -21,8 +21,9 @@
       <div
         :class="cardClass"
         :style="cardStyle"
-        class="shadow-lg rounded-lg p-6 border-l-2 border-red-600"
+        class="shadow-lg rounded-lg p-6 border-l-2 border-red-600 hover:shadow-xl transition-all duration-300"
       >
+
 
         <!-- Card Title -->
         <h2 :class="textClass" class="text-xl font-bold mb-4 flex items-center gap-2">
@@ -67,12 +68,13 @@
             </thead>
 
             <tbody>
-              <tr
-                v-for="admin in admins"
-                :key="admin.id"
-                :class="tableRowClass"
-                class="transition"
-              >
+            <tr
+              v-for="admin in admins"
+              :key="admin.id"
+              :class="tableRowClass"
+              class="transition duration-200 hover:shadow-md"
+            >
+
                 <td :class="textClass" class="px-6 py-4 text-sm">
                   {{ admin.firstName }} {{ admin.lastName }}
                 </td>
@@ -97,18 +99,19 @@
                 <td class="px-6 py-4 text-sm flex gap-2">
                   <button
                     @click="updateAdmin(admin)"
-                    class="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    class="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                   >
                     <Save class="w-4 h-4" /> Save
                   </button>
 
                   <button
                     @click="deleteAdmin(admin.id)"
-                    class="flex items-center gap-1 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+                    class="flex items-center gap-1 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                   >
                     <Trash2 class="w-4 h-4" /> Delete
                   </button>
                 </td>
+
               </tr>
 
               <tr v-if="admins.length === 0">

@@ -23,27 +23,30 @@
 
         <button
           @click="logout"
-          class="bg-red-600 text-white px-5 py-2 rounded flex items-center gap-2"
+          class="bg-red-600 text-white px-5 py-2 rounded flex items-center gap-2 hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
         >
           <LogOutIcon class="w-5 h-5" /> Logout
         </button>
+
       </div>
 
       <!-- Tabs -->
       <div class="flex space-x-4 mb-6 border-b border-gray-300">
-        <button @click="activeTab = 'general'" :class="tabClass('general')" class="px-4 py-2 flex items-center gap-1">
+        <button @click="activeTab = 'general'" :class="[tabClass('general'), tabHoverClass]" class="px-4 py-2 flex items-center gap-1 transition-all duration-200 rounded-t">
           <UserIcon class="w-5 h-5" /> General
         </button>
-        <button @click="activeTab = 'inventory'" :class="tabClass('inventory')" class="px-4 py-2 flex items-center gap-1">
+        <button @click="activeTab = 'inventory'" :class="[tabClass('inventory'), tabHoverClass]" class="px-4 py-2 flex items-center gap-1 transition-all duration-200 rounded-t">
           <PackageIcon class="w-5 h-5" /> Inventory
         </button>
-        <button @click="activeTab = 'notifications'" :class="tabClass('notifications')" class="px-4 py-2 flex items-center gap-1">
+        <button @click="activeTab = 'notifications'" :class="[tabClass('notifications'), tabHoverClass]" class="px-4 py-2 flex items-center gap-1 transition-all duration-200 rounded-t">
           <BellIcon class="w-5 h-5" /> Notifications
         </button>
-        <button @click="activeTab = 'warehouse'" :class="tabClass('warehouse')" class="px-4 py-2 flex items-center gap-1">
+        <button @click="activeTab = 'warehouse'" :class="[tabClass('warehouse'), tabHoverClass]" class="px-4 py-2 flex items-center gap-1 transition-all duration-200 rounded-t">
           <MapPinIcon class="w-5 h-5" /> Warehouse
         </button>
       </div>
+
+
 
       <!-- Status Messages -->
       <div v-if="isSaving" class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4 flex items-center gap-2">
@@ -63,7 +66,8 @@
 
         <!-- General -->
         <div v-if="activeTab === 'general'">
-          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600 hover:shadow-xl transition-all duration-300">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <UserCogIcon class="w-5 h-5" /> General Settings
             </h2>
@@ -86,16 +90,18 @@
                 <option value="auto">Auto</option>
               </select>
 
-              <button @click="saveSettings" class="bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2">
+              <button @click="saveSettings" class="bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                 <SaveIcon class="w-5 h-5" /> Save General Settings
               </button>
+
             </div>
           </div>
         </div>
 
         <!-- Inventory -->
         <div v-if="activeTab === 'inventory'">
-          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600 hover:shadow-xl transition-all duration-300">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <PackageIcon class="w-5 h-5" /> Inventory Settings
             </h2>
@@ -112,55 +118,62 @@
               Enable Auto Reorder
             </label>
 
-            <button @click="saveSettings" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2">
+            <button @click="saveSettings" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               <SaveIcon class="w-5 h-5" /> Save Inventory Settings
             </button>
+
           </div>
         </div>
 
         <!-- Notifications -->
         <div v-if="activeTab === 'notifications'">
-          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600 hover:shadow-xl transition-all duration-300">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <BellRingIcon class="w-5 h-5" /> Notification Settings
             </h2>
 
-            <div v-for="(label, key) in notificationLabels" :key="key" class="flex justify-between p-4 bg-gray-50 rounded mb-2">
+            <div v-for="(label, key) in notificationLabels" :key="key" class="flex justify-between p-4 bg-gray-50 rounded mb-2 hover:bg-gray-100 transition-all duration-200 cursor-pointer">
               <span>{{ label }}</span>
               <input type="checkbox" v-model="settings.notifications[key]" />
             </div>
 
-            <button @click="saveSettings" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2">
+
+            <button @click="saveSettings" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded flex items-center gap-2 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               <SaveIcon class="w-5 h-5" /> Save Notification Settings
             </button>
+
           </div>
         </div>
 
         <!-- Warehouse -->
         <div v-if="activeTab === 'warehouse'">
-          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600">
+          <div :class="cardClass" :style="cardStyle" class="border-l-2 border-red-600 hover:shadow-xl transition-all duration-300">
+
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <MapPinIcon class="w-5 h-5" /> Warehouse Locations
             </h2>
 
-            <div v-for="(wh, i) in settings.warehouse.locations" :key="i" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-              <input v-model="wh.name" class="border rounded px-3 py-2" placeholder="Name" />
-              <input v-model="wh.location" class="border rounded px-3 py-2" placeholder="Location" />
+            <div v-for="(wh, i) in settings.warehouse.locations" :key="i" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 hover:bg-gray-50 p-2 rounded transition-all duration-200">
+              <input v-model="wh.name" class="border rounded px-3 py-2 hover:shadow-sm transition-all duration-200" placeholder="Name" />
+              <input v-model="wh.location" class="border rounded px-3 py-2 hover:shadow-sm transition-all duration-200" placeholder="Location" />
               <div class="flex gap-2">
-                <input v-model.number="wh.capacity" type="number" class="border rounded px-3 py-2 w-full" placeholder="Capacity" />
-                <button @click="removeWarehouse(i)" class="bg-red-600 text-white px-3 rounded">
+                <input v-model.number="wh.capacity" type="number" class="border rounded px-3 py-2 w-full hover:shadow-sm transition-all duration-200" placeholder="Capacity" />
+                <button @click="removeWarehouse(i)" class="bg-red-600 text-white px-3 rounded hover:bg-red-700 hover:shadow-lg transition-all duration-200">
                   X
                 </button>
               </div>
             </div>
 
-            <button @click="addWarehouse" class="bg-green-600 text-white px-4 py-2 rounded">
+
+            <button @click="addWarehouse" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               Add Warehouse
             </button>
 
-            <button @click="saveSettings" class="ml-2 bg-blue-600 text-white px-6 py-2 rounded">
+            <button @click="saveSettings" class="ml-2 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               Save Warehouse Settings
             </button>
+
           </div>
         </div>
 
@@ -295,4 +308,11 @@ const tabClass = (tab) =>
   activeTab.value === tab
     ? "text-blue-600 border-b-2 border-blue-600"
     : "text-gray-600";
+
+const tabHoverClass = computed(() =>
+  settings.value.general.theme === "dark"
+    ? "hover:bg-gray-700 hover:text-blue-400"
+    : "hover:bg-gray-100 hover:text-blue-700"
+);
+
 </script>
