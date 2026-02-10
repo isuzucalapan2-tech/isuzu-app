@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center h-16">
 
         <!-- Logo / Brand -->
-        <div class="text-xl font-extrabold text-red-600 tracking-widest">
+        <div class="text-xl font-extrabold text-red-600 tracking-widest isuzu-font">
           ISUZU
         </div>
 
@@ -144,5 +144,16 @@ const isOpen = ref(false);
   background-color: #ef4444;
   border-radius: 9999px;
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+}
+
+@font-face {
+  font-family: 'IsuzuFont';
+  src: url('@/assets/usuzi/usuzi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.isuzu-font {
+  font-family: 'IsuzuFont', sans-serif;
 }
 </style>
