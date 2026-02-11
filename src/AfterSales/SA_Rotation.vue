@@ -4,34 +4,38 @@
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[50%] shrink-0">
       
-      <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden">
+      <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-3 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
           <span class="text-xl">📦</span>
           <h2 class="font-bold text-sm tracking-wide uppercase">Retail Orders</h2>
         </div>
+
         
         <div class="flex-1 overflow-y-auto p-3 relative">
           <ul class="space-y-2">
             <li v-for="(pr, index) in prOrders" :key="index" 
-                class="group flex justify-between items-center p-2.5 bg-slate-50 hover:bg-indigo-50 rounded-lg border border-slate-100 transition-all duration-200 relative">
+                class="group flex justify-between items-center p-2.5 bg-slate-50 hover:bg-indigo-50 hover:shadow-md rounded-lg border border-slate-100 transition-all duration-200 relative">
+
               <span class="text-sm font-semibold text-slate-700 truncate pr-2">{{ pr }}</span>
               
               <div class="relative">
                 <button 
-                  class="p-1 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-md transition-colors"
+                  class="p-1 text-slate-400 hover:text-indigo-600 hover:bg-white hover:shadow-sm rounded-md transition-all duration-200"
                   @click.stop="toggleDropdown(index, 'prOrders')"
                 >
                   <span class="text-lg leading-none font-bold">⋮</span>
                 </button>
+
                 
                 <div v-if="dropdownIndex === index && dropdownType === 'prOrders'" 
                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-xl border border-slate-100 z-50 overflow-hidden animate-fade-in-down">
-                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2" @click.stop="editPROrder(index, pr)">
+                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:pl-5 transition-all duration-200 flex items-center gap-2" @click.stop="editPROrder(index, pr)">
                     <span>✎</span> Edit
                   </button>
-                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-red-500 hover:bg-red-50 flex items-center gap-2 border-t border-slate-100" @click.stop="deletePROrder(index, pr)">
+                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-red-500 hover:bg-red-50 hover:pl-5 transition-all duration-200 flex items-center gap-2 border-t border-slate-100" @click.stop="deletePROrder(index, pr)">
                     <span>🗑</span> Delete
                   </button>
+
                 </div>
               </div>
             </li>
@@ -49,27 +53,31 @@
               v-model="newPROrder" 
               @input="newPROrder = newPROrder.toUpperCase()" 
               type="text"
-              class="flex-1 rounded-lg border-slate-300 bg-slate-50 text-xs px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              class="flex-1 rounded-lg border-slate-300 bg-slate-50 text-xs px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none hover:bg-white hover:border-indigo-300 transition-all duration-200"
               placeholder="Enter order..." 
               required
             />
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-transform active:scale-95 shadow-md">
+
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md">
               Add
             </button>
+
           </form>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden">
+      <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-3 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
           <span class="text-xl">👤</span>
           <h2 class="font-bold text-sm tracking-wide uppercase">Service Advisors</h2>
         </div>
 
+
         <div class="flex-1 overflow-y-auto p-3">
           <ul class="space-y-2">
             <li v-for="(sa, index) in serviceAdvisors" :key="index" 
-                class="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100 hover:shadow-sm transition-all">
+                class="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+
               
               <div class="flex flex-col min-w-0 flex-1 mr-2">
                 <span class="text-sm font-bold text-slate-700 truncate">{{ sa.saName }}</span>
@@ -89,10 +97,11 @@
 
               <div class="flex gap-2">
                 <div class="relative group" @mouseenter="hoveringSAIndex = index" @mouseleave="hoveringSAIndex = null">
-                  <div class="flex flex-col items-center bg-white border border-indigo-100 shadow-sm rounded px-2 py-1 cursor-help hover:border-indigo-400 transition-colors">
+                  <div class="flex flex-col items-center bg-white border border-indigo-100 shadow-sm rounded px-2 py-1 cursor-help hover:border-indigo-400 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                     <span class="text-xs font-black text-indigo-600 leading-none">{{ getOngoingProCount(sa.saName) }}</span>
                     <span class="text-[8px] text-slate-400 uppercase">Ongoing</span>
                   </div>
+
                   
                   <div v-if="hoveringSAIndex === index" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-white rounded-lg shadow-xl border border-slate-200 z-50 overflow-hidden animate-fade-in-up">
                     <div class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 text-center">Handled PROs</div>
@@ -106,10 +115,11 @@
                 </div>
 
                 <div class="relative group" @mouseenter="hoveringJobDoneIndex = index" @mouseleave="hoveringJobDoneIndex = null">
-                  <div class="flex flex-col items-center bg-white border border-green-100 shadow-sm rounded px-2 py-1 cursor-help hover:border-green-400 transition-colors">
+                  <div class="flex flex-col items-center bg-white border border-green-100 shadow-sm rounded px-2 py-1 cursor-help hover:border-green-400 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                     <span class="text-xs font-black text-green-600 leading-none">{{ getJobDoneProCount(sa.saName) }}</span>
                     <span class="text-[8px] text-slate-400 uppercase">Job Done</span>
                   </div>
+
                   
                    <div v-if="hoveringJobDoneIndex === index" class="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-xl border border-slate-200 z-50 overflow-hidden animate-fade-in-up">
                     <div class="bg-green-600 text-white text-[10px] font-bold px-2 py-1 text-center">Completed PROs</div>
@@ -123,10 +133,11 @@
                 </div>
 
                 <div class="relative group" @mouseenter="hoveringCancelledIndex = index" @mouseleave="hoveringCancelledIndex = null">
-                  <div class="flex flex-col items-center bg-white border border-red-100 shadow-sm rounded px-2 py-1 cursor-help hover:border-red-400 transition-colors">
+                  <div class="flex flex-col items-center bg-white border border-red-100 shadow-sm rounded px-2 py-1 cursor-help hover:border-red-400 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                     <span class="text-xs font-black text-red-600 leading-none">{{ getCancelledProCount(sa.saName) }}</span>
                     <span class="text-[8px] text-slate-400 uppercase">Cancelled</span>
                   </div>
+
                   
                    <div v-if="hoveringCancelledIndex === index" class="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-xl border border-slate-200 z-50 overflow-hidden animate-fade-in-up">
                     <div class="bg-red-600 text-white text-[10px] font-bold px-2 py-1 text-center">Cancelled PROs</div>
@@ -140,20 +151,22 @@
                 </div>
 
                 <div class="relative">
-                  <button class="h-full px-1 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 rounded transition-colors"
+                  <button class="h-full px-1 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 hover:shadow-sm rounded transition-all duration-200"
                      @click.stop="toggleDropdown(index, 'serviceAdvisors')">
                     ⋮
                   </button>
+
                   <div v-if="dropdownIndex === index && dropdownType === 'serviceAdvisors'" 
                        class="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-xl border border-slate-100 z-50 overflow-hidden">
-                    <button class="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-slate-50" @click.stop="editServiceAdvisor(index, sa.saName)">✎ Edit</button>
+                    <button class="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:pl-4 transition-all duration-200" @click.stop="editServiceAdvisor(index, sa.saName)">✎ Edit</button>
                     <div class="bg-slate-50 px-3 py-1 text-[9px] font-bold text-slate-400 uppercase">Status</div>
                     <button v-for="status in statuses" :key="status" 
-                            class="w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:bg-indigo-50"
+                            class="w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:bg-indigo-50 hover:pl-4 transition-all duration-200"
                             @click.stop="updateServiceAdvisorStatus(index, sa.saName, status)">
                       {{ status }}
                     </button>
-                    <button class="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-50 border-t border-slate-100" @click.stop="deleteServiceAdvisor(index, sa.saName)">🗑 Delete</button>
+                    <button class="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-50 hover:pl-4 border-t border-slate-100 transition-all duration-200" @click.stop="deleteServiceAdvisor(index, sa.saName)">🗑 Delete</button>
+
                   </div>
                 </div>
               </div>
@@ -172,29 +185,34 @@
               v-model="newServiceAdvisor" 
               @input="newServiceAdvisor = newServiceAdvisor.toUpperCase()" 
               type="text"
-              class="flex-1 rounded-lg border-slate-300 bg-slate-50 text-xs px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              class="flex-1 rounded-lg border-slate-300 bg-slate-50 text-xs px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all hover:bg-white hover:border-indigo-300"
               placeholder="Enter name..." 
               required
             />
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-transform active:scale-95 shadow-md">
+
+
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md">
               Add
             </button>
+
           </form>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden">
+      <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-3 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
           <span class="text-xl">🎯</span>
           <h2 class="font-bold text-sm tracking-wide uppercase">SA's Assign to RO's</h2>
         </div>
+
 
         <div class="flex-1 overflow-y-auto p-2 bg-slate-50/50">
           <div class="space-y-2">
             
             <div>
               <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Select Retail Order</label>
-              <select v-model="assignmentForm.selectedPRO" @change="onProSelected" class="w-full rounded-lg border-slate-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-1.5">
+            <select v-model="assignmentForm.selectedPRO" @change="onProSelected" class="w-full rounded-lg border-slate-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-1.5 hover:border-indigo-400 transition-colors duration-200">
+
                 <option value="">Choose a Retail Order</option>
                 <option v-for="pro in prOrders" :key="pro" :value="pro">{{ pro }}</option>
               </select>
@@ -216,10 +234,11 @@
 
             <button 
               @click="showManualSelection = !showManualSelection"
-              class="w-full py-1 text-[10px] font-medium text-slate-500 bg-white border border-slate-200 rounded-md hover:text-indigo-600 hover:border-indigo-300 transition-colors"
+              class="w-full py-1 text-[10px] font-medium text-slate-500 bg-white border border-slate-200 rounded-md hover:text-indigo-600 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
             >
               {{ showManualSelection ? 'Close Manual Selection' : '+ Override Auto-Assign' }}
             </button>
+
 
             <div v-if="showManualSelection" class="grid grid-cols-3 gap-1 bg-white p-1.5 rounded-lg border border-slate-200">
               <button 
@@ -227,41 +246,47 @@
                 :key="sa.saName"
                 type="button"
                 :class="[
-                  'flex flex-col items-center p-1.5 rounded-md border text-[10px] transition-all',
+                  'flex flex-col items-center p-1.5 rounded-md border text-[10px] transition-all duration-200',
                   assignmentForm.selectedSA === sa.saName 
                     ? 'border-indigo-500 bg-indigo-50 text-indigo-700 font-bold ring-1 ring-indigo-500' 
-                    : 'border-slate-100 hover:bg-slate-50 text-slate-600'
+                    : 'border-slate-100 hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-sm hover:-translate-y-0.5 text-slate-600'
                 ]"
                 @click="selectManualSA(sa.saName)"
               >
+
+
                 <span>{{ sa.saName }}</span>
                 <span class="text-[8px] opacity-70">{{ sa.saStatus }}</span>
               </button>
-              <button @click="resetToAutoAssignment" class="col-span-3 text-[9px] text-green-600 font-bold uppercase tracking-wide py-0.5 hover:underline">
+              <button @click="resetToAutoAssignment" class="col-span-3 text-[9px] text-green-600 font-bold uppercase tracking-wide py-0.5 hover:underline hover:text-green-700 transition-colors duration-200">
                 ↻ Reset to Auto
               </button>
+
             </div>
 
             <div>
               <label class="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Note (Optional)</label>
               <textarea 
                 v-model="assignmentForm.note" 
-                class="w-full rounded-lg border-slate-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-1 min-h-12"
+                class="w-full rounded-lg border-slate-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-1 min-h-12 hover:border-indigo-400 hover:bg-white transition-all duration-200"
                 placeholder="Add notes..."
                 rows="2"
               ></textarea>
+
+
             </div>
           </div>
         </div>
 
         <div class="p-3 bg-white border-t border-slate-100 shrink-0 z-10">
-          <button 
-            @click="proceedAssignment"
-            :disabled="!assignmentForm.selectedPRO || !assignmentForm.selectedSA"
-            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2.5 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-          >
-            Assign Order
-          </button>
+            <button 
+              @click="proceedAssignment"
+              :disabled="!assignmentForm.selectedPRO || !assignmentForm.selectedSA"
+              class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2.5 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              Assign Order
+            </button>
+
         </div>
       </div>
     </div>
@@ -269,7 +294,8 @@
 
     <div class="flex-1 grid grid-cols-1 md:grid-cols-5 gap-4 min-h-0">
       
-      <div class="md:col-span-3 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden">
+      <div class="md:col-span-3 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
+
          <div class="bg-slate-50 border-b border-slate-200 p-3 flex justify-between items-center shrink-0">
             <div class="flex items-center gap-2 text-indigo-700">
                <span class="text-xl">📋</span>
@@ -278,9 +304,10 @@
             <input 
                 v-model="searchQuery"
                 type="text"
-                class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 w-64 focus:ring-indigo-500 focus:border-indigo-500"
+                class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 w-64 focus:ring-indigo-500 focus:border-indigo-500 hover:border-indigo-400 transition-colors duration-200"
                 placeholder="Search PRO or SA..."
             />
+
          </div>
          
          <div class="flex-1 overflow-auto">
@@ -295,7 +322,8 @@
                   </tr>
                </thead>
                <tbody class="bg-white divide-y divide-slate-100">
-                  <tr v-for="(assignment, index) in paginatedActiveAssignments" :key="index" class="hover:bg-indigo-50/30 transition-colors">
+                  <tr v-for="(assignment, index) in paginatedActiveAssignments" :key="index" class="hover:bg-indigo-50/50 hover:shadow-sm transition-all duration-200">
+
                      <td class="px-3 py-2 whitespace-nowrap text-[12px] font-medium text-slate-900">{{ assignment.pro }}</td>
                      <td class="px-3 py-2 whitespace-nowrap text-[12px] text-slate-600">{{ assignment.saName }}</td>
                      <td class="px-3 py-2 whitespace-nowrap">
@@ -305,10 +333,11 @@
                      </td>
                      <td class="px-3 py-2 whitespace-nowrap text-[12px] text-slate-400">{{ formatDate(assignment.date) }}</td>
                      <td class="px-3 py-2 whitespace-nowrap text-right text-sm font-medium space-x-1">
-                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit" @click="openEditModal(getOriginalIndex(assignment), assignment)">✎</button>
-                        <button class="text-green-600 hover:text-green-900" title="Done" @click="markAsDone(getOriginalIndex(assignment))">✓</button>
-                        <button class="text-orange-500 hover:text-orange-900" title="Cancel" @click="cancelAssignment(getOriginalIndex(assignment))">✕</button>
+                        <button class="text-indigo-600 hover:text-indigo-900 hover:bg-indigo-100 rounded px-1 transition-all duration-200" title="Edit" @click="openEditModal(getOriginalIndex(assignment), assignment)">✎</button>
+                        <button class="text-green-600 hover:text-green-900 hover:bg-green-100 rounded px-1 transition-all duration-200" title="Done" @click="markAsDone(getOriginalIndex(assignment))">✓</button>
+                        <button class="text-orange-500 hover:text-orange-900 hover:bg-orange-100 rounded px-1 transition-all duration-200" title="Cancel" @click="cancelAssignment(getOriginalIndex(assignment))">✕</button>
                      </td>
+
                   </tr>
                </tbody>
             </table>
@@ -318,13 +347,15 @@
          </div>
 
          <div class="p-2 border-t border-slate-200 bg-slate-50 flex justify-center gap-2 shrink-0">
-             <button @click="currentPage--" :disabled="currentPage === 1" class="px-2 py-1 text-xs border rounded hover:bg-white disabled:opacity-50">← Prev</button>
+             <button @click="currentPage--" :disabled="currentPage === 1" class="px-2 py-1 text-xs border rounded hover:bg-white hover:shadow-sm transition-all duration-200 disabled:opacity-50">← Prev</button>
              <span class="text-xs self-center font-medium text-slate-600">Page {{ currentPage }}</span>
-             <button @click="currentPage++" :disabled="currentPage === totalActivePages" class="px-2 py-1 text-xs border rounded hover:bg-white disabled:opacity-50">Next →</button>
+             <button @click="currentPage++" :disabled="currentPage === totalActivePages" class="px-2 py-1 text-xs border rounded hover:bg-white hover:shadow-sm transition-all duration-200 disabled:opacity-50">Next →</button>
          </div>
+
       </div>
 
-      <div class="md:col-span-2 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden opacity-90 hover:opacity-100 transition-opacity">
+      <div class="md:col-span-2 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden opacity-90 hover:opacity-100 hover:shadow-xl transition-all duration-300">
+
          <div class="bg-slate-50 border-b border-slate-200 p-3 flex justify-between items-center gap-2 shrink-0 flex-wrap">
             <div class="flex items-center gap-2 text-slate-600">
                <span class="text-xl">📜</span>
@@ -334,21 +365,24 @@
                <input 
                   v-model="historyFromDate"
                   type="date"
-                  class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500"
+                  class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500 hover:border-indigo-400 transition-colors duration-200"
                />
                <span class="text-xs text-slate-400">to</span>
                <input 
                   v-model="historyToDate"
                   type="date"
-                  class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500"
+                  class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500 hover:border-indigo-400 transition-colors duration-200"
                />
                <input 
                   v-model="historySearchQuery"
                   type="text"
-                  class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 w-32 focus:ring-indigo-500 focus:border-indigo-500"
+                  class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 w-32 focus:ring-indigo-500 focus:border-indigo-500 hover:border-indigo-400 hover:shadow-sm transition-all duration-200"
                   placeholder="Search PRO or SA..."
                />
-               <select v-model="historyStatusFilter" class="bg-white border border-slate-300 text-xs rounded-md px-2 py-1.5 focus:ring-indigo-500">
+
+
+               <select v-model="historyStatusFilter" class="bg-white border border-slate-300 text-xs rounded-md px-2 py-1.5 focus:ring-indigo-500 hover:border-indigo-400 transition-colors duration-200">
+
                   <option value="">All Status</option>
                   <option value="JOB DONE">Completed</option>
                   <option value="CANCELLED">Cancelled</option>
@@ -366,7 +400,8 @@
                   </tr>
                </thead>
                <tbody class="bg-white divide-y divide-slate-100">
-                  <tr v-for="(assignment, index) in paginatedHistoryAssignments" :key="index" class="hover:bg-slate-50">
+                  <tr v-for="(assignment, index) in paginatedHistoryAssignments" :key="index" class="hover:bg-slate-100 hover:shadow-sm transition-all duration-200">
+
                      <td class="px-2 py-1 whitespace-nowrap text-[13px]">
                         <div class="font-bold text-slate-700">{{ assignment.pro }}</div>
                         <div class="text-[9px] text-slate-400">{{ assignment.saName }}</div>
@@ -380,18 +415,20 @@
                         </span>
                      </td>
                      <td class="px-3 py-2 whitespace-nowrap text-right text-sm">
-                         <button class="text-slate-400 hover:text-red-500 transition-colors" @click="deleteAssignment(getOriginalIndex(assignment))">🗑</button>
+                         <button class="text-slate-400 hover:text-red-500 hover:bg-red-50 rounded px-1 transition-all duration-200" @click="deleteAssignment(getOriginalIndex(assignment))">🗑</button>
                      </td>
+
                   </tr>
                </tbody>
             </table>
          </div>
 
          <div class="p-2 border-t border-slate-200 bg-slate-50 flex justify-center gap-2 shrink-0">
-             <button @click="historyPage--" :disabled="historyPage === 1" class="px-2 py-1 text-xs border rounded hover:bg-white disabled:opacity-50">← Prev</button>
+             <button @click="historyPage--" :disabled="historyPage === 1" class="px-2 py-1 text-xs border rounded hover:bg-white hover:shadow-sm transition-all duration-200 disabled:opacity-50">← Prev</button>
              <span class="text-xs self-center font-medium text-slate-600">Page {{ historyPage }}</span>
-             <button @click="historyPage++" :disabled="historyPage === totalHistoryPages" class="px-2 py-1 text-xs border rounded hover:bg-white disabled:opacity-50">Next →</button>
+             <button @click="historyPage++" :disabled="historyPage === totalHistoryPages" class="px-2 py-1 text-xs border rounded hover:bg-white hover:shadow-sm transition-all duration-200 disabled:opacity-50">Next →</button>
          </div>
+
       </div>
     </div>
 
@@ -399,7 +436,8 @@
        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100" @click.stop>
           <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center text-white">
              <h3 class="font-bold">Edit Assignment</h3>
-             <button @click="closeEditModal" class="text-white/80 hover:text-white font-bold text-xl">✕</button>
+          <button @click="closeEditModal" class="text-white/80 hover:text-white hover:scale-110 font-bold text-xl transition-transform duration-200">✕</button>
+
           </div>
           <div class="p-6 space-y-4">
              <div class="grid grid-cols-2 gap-4">
@@ -426,8 +464,9 @@
              </div>
           </div>
           <div class="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-100">
-             <button @click="closeEditModal" class="px-4 py-2 rounded text-slate-600 font-bold text-xs hover:bg-slate-200 transition-colors">Cancel</button>
-             <button @click="saveEditedAssignment" class="px-4 py-2 rounded bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 shadow-md transition-colors">Save Changes</button>
+             <button @click="closeEditModal" class="px-4 py-2 rounded text-slate-600 font-bold text-xs hover:bg-slate-200 hover:shadow-sm transition-all duration-200">Cancel</button>
+             <button @click="saveEditedAssignment" class="px-4 py-2 rounded bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 shadow-md transition-all duration-200">Save Changes</button>
+
           </div>
        </div>
     </div>
@@ -877,16 +916,6 @@ export default {
                         console.error("No such document!");
                     }
                 } catch (error) {
-                    console.error("Error deleting PR order:", error);
-                }
-            //}
-        },
-        toggleDropdown(index, type) {
-            if (this.dropdownIndex === index && this.dropdownType === type) {
-                this.closeDropdown();
-            } else {
-                this.dropdownIndex = index;
-                this.dropdownType = type;
             }
         },
         closeDropdown() {
