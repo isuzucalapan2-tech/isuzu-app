@@ -12,6 +12,7 @@ import SA_Rotation from '../AfterSales/SA_Rotation.vue'
 const routes = [
   { path: '/', name: 'Login', component: Login },
   { path: '/register', name: 'Register', component: Register },
+  { path: '/dashboard', redirect: '/admin/dashboard' },
   {
     path: '/admin',
     component: AdminParent,
@@ -25,6 +26,7 @@ const routes = [
     ]
   },
 ]
+
 const router = createRouter({
   history: createWebHistory(),
   routes

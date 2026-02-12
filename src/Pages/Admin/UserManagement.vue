@@ -1,4 +1,4 @@
-<template>
+ <template>
   <!-- 🔧 LOADING -->
   <div v-if="isLoading" class="min-h-screen flex items-center justify-center">
     <Loaders />
@@ -55,6 +55,36 @@
 
                 <th class="px-6 py-3 text-left text-sm font-medium">
                   <div class="flex items-center gap-2">
+                    <Phone class="w-4 h-4" /> Contact
+                  </div>
+                </th>
+
+                <th class="px-6 py-3 text-left text-sm font-medium">
+                  <div class="flex items-center gap-2">
+                    <Calendar class="w-4 h-4" /> Birthday
+                  </div>
+                </th>
+
+                <th class="px-6 py-3 text-left text-sm font-medium">
+                  <div class="flex items-center gap-2">
+                    <UserCircle class="w-4 h-4" /> Gender
+                  </div>
+                </th>
+
+                <th class="px-6 py-3 text-left text-sm font-medium">
+                  <div class="flex items-center gap-2">
+                    <Clock class="w-4 h-4" /> Joined
+                  </div>
+                </th>
+
+                <th class="px-6 py-3 text-left text-sm font-medium">
+                  <div class="flex items-center gap-2">
+                    <FileText class="w-4 h-4" /> Logs
+                  </div>
+                </th>
+
+                <th class="px-6 py-3 text-left text-sm font-medium">
+                  <div class="flex items-center gap-2">
                     <Briefcase class="w-4 h-4" /> Role
                   </div>
                 </th>
@@ -64,12 +94,13 @@
                     <Settings class="w-4 h-4" /> Actions
                   </div>
                 </th>
+
               </tr>
             </thead>
 
             <tbody>
             <tr
-              v-for="admin in admins"
+              v-for="admin in paginatedAdmins"
               :key="admin.id"
               :class="tableRowClass"
               class="transition duration-200 hover:shadow-md"
@@ -87,7 +118,32 @@
                   {{ admin.email }}
                 </td>
 
+                <td :class="textClass" class="px-6 py-4 text-sm">
+                  {{ admin.contact || 'N/A' }}
+                </td>
+
+                <td :class="textClass" class="px-6 py-4 text-sm">
+                  {{ formatDate(admin.birthday) }}
+                </td>
+
+                <td :class="textClass" class="px-6 py-4 text-sm">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium" :class="getGenderClass(admin.gender)">
+                    {{ admin.gender || 'N/A' }}
+                  </span>
+                </td>
+
+                <td :class="textClass" class="px-6 py-4 text-sm">
+                  {{ formatDate(admin.createdAt) }}
+                </td>
+
+                <td :class="textClass" class="px-6 py-4 text-sm">
+                  <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">
+                    {{ admin.logsCount || 0 }}
+                  </span>
+                </td>
+
                 <td class="px-6 py-4 text-sm">
+
                   <select v-model="admin.role" class="border rounded px-2 py-1 w-full">
                     <option disabled value="">Select role</option>
                     <option v-for="role in roles" :key="role" :value="role">
@@ -114,8 +170,9 @@
 
               </tr>
 
-              <tr v-if="admins.length === 0">
-                <td colspan="5" :class="subTextClass" class="text-center py-6">
+              <tr v-if="paginatedAdmins.length === 0">
+                <td colspan="10" :class="subTextClass" class="text-center py-6">
+
                   <div class="flex justify-center items-center gap-2">
                     <AlertCircle class="w-5 h-5" />
                     No administrator records found
@@ -125,6 +182,34 @@
 
             </tbody>
           </table>
+        </div>
+
+        <!-- Pagination -->
+        <div v-if="admins.length > 0" class="mt-4 flex items-center justify-between border-t pt-4" :class="isDarkMode ? 'border-gray-600' : 'border-gray-200'">
+          <div :class="subTextClass" class="text-sm">
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, admins.length) }} of {{ admins.length }} administrators
+          </div>
+          <div class="flex items-center gap-2">
+            <button 
+              @click="currentPage--" 
+              :disabled="currentPage === 1"
+              class="flex items-center gap-1 px-3 py-1.5 rounded border text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+              :class="isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-white' : 'border-gray-300 hover:bg-gray-100 text-gray-700'"
+            >
+              <ChevronLeft class="w-4 h-4" /> Prev
+            </button>
+            <span :class="textClass" class="text-sm font-medium px-3 py-1.5">
+              Page {{ currentPage }} of {{ totalPages }}
+            </span>
+            <button 
+              @click="currentPage++" 
+              :disabled="currentPage === totalPages"
+              class="flex items-center gap-1 px-3 py-1.5 rounded border text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+              :class="isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-white' : 'border-gray-300 hover:bg-gray-100 text-gray-700'"
+            >
+              Next <ChevronRight class="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
       </div>
@@ -158,14 +243,25 @@ import {
   Settings,
   Save,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Phone,
+  Calendar,
+  UserCircle,
+  Clock,
+  FileText,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-vue-next";
+
 
 /* =====================
    DATA
 ===================== */
 const admins = ref([]);
 const isLoading = ref(true);
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
+
 
 const roles = [
   "Operation Manager",
@@ -180,13 +276,69 @@ const roles = [
 ===================== */
 const fetchAdmins = async () => {
   const snapshot = await getDocs(collection(db, "Administrator"));
-  admins.value = snapshot.docs.map(d => ({
-    id: d.id,
-    role: d.data().role || "",
-    ...d.data()
-  }));
-  isLoading.value = false; // 🔧 ADDED
+  
+  // Fetch logs count for each admin
+  const adminsWithLogs = await Promise.all(
+    snapshot.docs.map(async (d) => {
+      const adminData = d.data();
+      
+      // Get logs count from logs collection
+      let logsCount = 0;
+      try {
+        const logsSnapshot = await getDocs(collection(db, "Administrator", d.id, "logs"));
+        logsCount = logsSnapshot.size;
+      } catch (e) {
+        logsCount = 0;
+      }
+      
+      return {
+        id: d.id,
+        role: adminData.role || "",
+        logsCount: logsCount,
+        ...adminData
+      };
+    })
+  );
+  
+  admins.value = adminsWithLogs;
+  isLoading.value = false;
 };
+
+/* =====================
+   PAGINATION
+===================== */
+const totalPages = computed(() => Math.ceil(admins.value.length / itemsPerPage.value) || 1);
+
+const paginatedAdmins = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  return admins.value.slice(start, start + itemsPerPage.value);
+});
+
+
+/* =====================
+   UTILITY FUNCTIONS
+===================== */
+const formatDate = (dateValue) => {
+  if (!dateValue) return 'N/A';
+  // Handle Firestore Timestamp or string date
+  const date = dateValue.toDate ? dateValue.toDate() : new Date(dateValue);
+  if (isNaN(date.getTime())) return 'N/A';
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+};
+
+const getGenderClass = (gender) => {
+  const classes = {
+    'Male': 'bg-blue-100 text-blue-800',
+    'Female': 'bg-pink-100 text-pink-800',
+    'Other': 'bg-purple-100 text-purple-800'
+  };
+  return classes[gender] || 'bg-gray-100 text-gray-800';
+};
+
 
 /* =====================
    UPDATE ROLE
