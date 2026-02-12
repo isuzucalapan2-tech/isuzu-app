@@ -14,7 +14,7 @@
           <ul class="space-y-2">
             <li v-for="(pr, index) in prOrders" :key="index" 
                 class="group flex justify-between items-center p-2.5 bg-slate-50 hover:bg-indigo-50 rounded-lg border border-slate-100 transition-all duration-200 relative">
-              <span class="text-sm font-semibold text-slate-700 truncate pr-2">{{ pr }}</span>
+              <span class="text-xs font-semibold text-slate-700 truncate pr-2">{{ pr }}</span>
               
               <div class="relative">
                 <button 
@@ -257,7 +257,8 @@
         <div class="p-3 bg-white border-t border-slate-100 shrink-0 z-10">
           <button 
             @click="proceedAssignment"
-            :disabled="!assignmentForm.selectedPRO || !assignmentForm.selectedSA"
+            :disabled="!assignmentForm.selectedPRO || !assignmentForm.selectedSA || isHistoryDateFilterNotToday"
+            :title="isHistoryDateFilterNotToday ? 'Can only assign when viewing today\'s history' : ''"
             class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2.5 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             Assign Order
@@ -299,15 +300,28 @@
                      <td class="px-3 py-2 whitespace-nowrap text-[12px] font-medium text-slate-900">{{ assignment.pro }}</td>
                      <td class="px-3 py-2 whitespace-nowrap text-[12px] text-slate-600">{{ assignment.saName }}</td>
                      <td class="px-3 py-2 whitespace-nowrap">
-                        <span class="px-1.5 inline-flex text-[10px] leading-4 font-semibold rounded-full bg-blue-100 text-blue-800 uppercase">
-                           {{ assignment.status }}
+                        <span 
+                           :class="[
+                              'px-1.5 inline-flex text-[10px] leading-4 font-semibold rounded-full uppercase',
+                              isAssignmentCutOff(assignment) 
+                                 ? 'bg-red-100 text-red-800'
+                                 : 'bg-blue-100 text-blue-800'
+                           ]"
+                        >
+                           {{ isAssignmentCutOff(assignment) ? 'CUT OFF' : assignment.status }}
                         </span>
                      </td>
                      <td class="px-3 py-2 whitespace-nowrap text-[12px] text-slate-400">{{ formatDate(assignment.date) }}</td>
                      <td class="px-3 py-2 whitespace-nowrap text-right text-sm font-medium space-x-1">
-                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit" @click="openEditModal(getOriginalIndex(assignment), assignment)">✎</button>
-                        <button class="text-green-600 hover:text-green-900" title="Done" @click="markAsDone(getOriginalIndex(assignment))">✓</button>
-                        <button class="text-orange-500 hover:text-orange-900" title="Cancel" @click="cancelAssignment(getOriginalIndex(assignment))">✕</button>
+                        <template v-if="isAssignmentCutOff(assignment)">
+                           <button class="text-red-600 hover:text-red-900" title="Delete" @click="deleteAssignmentDirect(getOriginalIndex(assignment))">🗑</button>
+                           <button class="text-amber-600 hover:text-amber-900" title="Reassign" @click="reassignAssignment(getOriginalIndex(assignment))">🔄</button>
+                        </template>
+                        <template v-else>
+                           <button class="text-indigo-600 hover:text-indigo-900" title="Edit" @click="openEditModal(getOriginalIndex(assignment), assignment)">✎</button>
+                           <button class="text-green-600 hover:text-green-900" title="Done" @click="markAsDone(getOriginalIndex(assignment))">✓</button>
+                           <button class="text-orange-500 hover:text-orange-900" title="Cancel" @click="cancelAssignment(getOriginalIndex(assignment))">✕</button>
+                        </template>
                      </td>
                   </tr>
                </tbody>
@@ -334,12 +348,14 @@
                <input 
                   v-model="historyFromDate"
                   type="date"
+                  :max="todayDate"
                   class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500"
                />
                <span class="text-xs text-slate-400">to</span>
                <input 
                   v-model="historyToDate"
                   type="date"
+                  :max="todayDate"
                   class="bg-white border border-slate-300 text-xs rounded-md px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500"
                />
                <input 
@@ -367,7 +383,7 @@
                </thead>
                <tbody class="bg-white divide-y divide-slate-100">
                   <tr v-for="(assignment, index) in paginatedHistoryAssignments" :key="index" class="hover:bg-slate-50">
-                     <td class="px-2 py-1 whitespace-nowrap text-[13px]">
+                     <td class="px-2 py-1 whitespace-nowrap text-[10px]">
                         <div class="font-bold text-slate-700">{{ assignment.pro }}</div>
                         <div class="text-[9px] text-slate-400">{{ assignment.saName }}</div>
                      </td>
@@ -469,11 +485,13 @@ export default {
             statusFilter: "",
             historySearchQuery: "",
             historyStatusFilter: "",
-            historyFromDate: null,
-            historyToDate: null,
+            historyFromDate: this.getTodayDateString(),
+            historyToDate: this.getTodayDateString(),
             currentPage: 1,
             historyPage: 1,
-            itemsPerPage: 5
+            itemsPerPage: 5,
+            assignmentsListener: null,
+            currentlyViewingDateRange: false
         };
     },
     computed: {
@@ -535,9 +553,42 @@ export default {
         paginatedHistoryAssignments() {
             const start = (this.historyPage - 1) * this.itemsPerPage;
             return this.filteredHistoryAssignments.slice(start, start + this.itemsPerPage);
+        },
+        todayDate() {
+            // Return today's date in YYYY-MM-DD format for max date restriction
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        },
+        isHistoryDateFilterNotToday() {
+            // Check if user is filtering history by a date that is NOT today
+            const today = this.todayDate;
+            // If either date filter is set and not equal to today, disable assignment
+            return (this.historyFromDate && this.historyFromDate !== today) || 
+                   (this.historyToDate && this.historyToDate !== today);
         }
     },
     methods: {
+        isAssignmentCutOff(assignment) {
+            // Check if assignment is ON GOING but not from today
+            if (assignment.status !== "ON GOING") {
+                return false;
+            }
+            
+            const today = this.todayDate;
+            const assignmentDateStr = assignment.date instanceof Date ? assignment.date.toISOString().split('T')[0] : String(assignment.date).split('T')[0];
+            return assignmentDateStr !== today;
+        },
+        getTodayDateString() {
+            // Return today's date in YYYY-MM-DD format
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        },
         getOngoingProCount(saName) {
             return this.assignments.filter(
                 a => a.saName === saName && a.status === "ON GOING"
@@ -647,11 +698,49 @@ export default {
             return this.assignmentForm.assignmentReason;
         },
         getOriginalIndex(assignment) {
-            return this.assignments.findIndex(a => 
-                a.pro === assignment.pro && 
-                a.saName === assignment.saName && 
-                a.date === assignment.date
-            );
+            return this.assignments.findIndex(a => {
+                // Compare using ISO date strings to handle Date object comparisons correctly
+                const aDateStr = a.date instanceof Date ? a.date.toISOString().split('T')[0] : String(a.date).split('T')[0];
+                const assignmentDateStr = assignment.date instanceof Date ? assignment.date.toISOString().split('T')[0] : String(assignment.date).split('T')[0];
+                
+                return a.pro === assignment.pro && 
+                       a.saName === assignment.saName && 
+                       aDateStr === assignmentDateStr;
+            });
+        },
+        deleteAssignmentDirect(index) {
+            // Delete assignment directly without confirmation
+            const saName = this.assignments[index].saName;
+            const wasOnGoing = this.assignments[index].status === "ON GOING";
+            
+            this.assignments.splice(index, 1);
+            this.saveAssignmentsToFirebase();
+            
+            // If deleted assignment was ON GOING, check if SA has other ON GOING assignments
+            if (wasOnGoing) {
+                const hasOnGoingAssignments = this.assignments.some(
+                    a => a.saName === saName && a.status === "ON GOING"
+                );
+                
+                // If no more ON GOING assignments, set status back to AVAILABLE
+                if (!hasOnGoingAssignments) {
+                    this.updateSAStatus(saName, "AVAILABLE");
+                }
+            }
+        },
+        async reassignAssignment(index) {
+            // Reassign a cut-off assignment to today
+            const assignment = this.assignments[index];
+            
+            // Change status to ON GOING and update date to today
+            assignment.status = "ON GOING";
+            assignment.date = new Date();
+            
+            // Save to Firebase (this will handle grouping by date)
+            await this.saveAssignmentsToFirebase();
+            
+            // Update SA status to WORKING
+            await this.updateSAStatus(assignment.saName, "WORKING");
         },
         selectManualSA(saName) {
             this.assignmentForm.selectedSA = saName;
@@ -1060,43 +1149,37 @@ export default {
         },
         async saveAssignmentsToFirebase() {
             try {
-                const dateKey = this.getTodayDateKey();
-                const docRef = doc(db, "SA_Assignment", `isuzu&calapan&assignments&${dateKey}`);
-                const docSnap = await getDoc(docRef);
+                // Group assignments by date
+                const assignmentsByDate = {};
                 
-                // Get the current document to find all old fields to delete
-                let updateData = {};
-                
-                if (docSnap.exists()) {
-                    const existingData = docSnap.data();
-                    // Mark all old assignment fields for deletion
-                    Object.keys(existingData).forEach(key => {
-                        if (key.startsWith("assign")) {
-                            updateData[key] = deleteField();
-                        }
-                    });
-                }
-                
-                // Add new assignments
-                this.assignments.forEach((assignment, index) => {
-                    updateData[`assign${index + 1}`] = {
-                        pro: assignment.pro,
-                        saName: assignment.saName,
-                        note: assignment.note || "",
-                        status: assignment.status,
-                        date: assignment.date instanceof Date ? assignment.date.toISOString() : assignment.date,
-                        timestamp: new Date().toISOString()
-                    };
+                this.assignments.forEach(assignment => {
+                    const dateStr = assignment.date instanceof Date ? assignment.date.toISOString().split('T')[0] : String(assignment.date).split('T')[0];
+                    if (!assignmentsByDate[dateStr]) {
+                        assignmentsByDate[dateStr] = [];
+                    }
+                    assignmentsByDate[dateStr].push(assignment);
                 });
-
-                // Update with both deletions and new data
-                if (docSnap.exists()) {
-                    await updateDoc(docRef, updateData);
-                } else {
-                    // If document doesn't exist, only add the new data
-                    const newData = {};
-                    this.assignments.forEach((assignment, index) => {
-                        newData[`assign${index + 1}`] = {
+                
+                // Save assignments for each date
+                for (const [dateKey, dateAssignments] of Object.entries(assignmentsByDate)) {
+                    const docRef = doc(db, "SA_Assignment", `isuzu&calapan&assignments&${dateKey}`);
+                    const docSnap = await getDoc(docRef);
+                    
+                    let updateData = {};
+                    
+                    if (docSnap.exists()) {
+                        const existingData = docSnap.data();
+                        // Mark all old assignment fields for deletion
+                        Object.keys(existingData).forEach(key => {
+                            if (key.startsWith("assign")) {
+                                updateData[key] = deleteField();
+                            }
+                        });
+                    }
+                    
+                    // Add new assignments for this date
+                    dateAssignments.forEach((assignment, index) => {
+                        updateData[`assign${index + 1}`] = {
                             pro: assignment.pro,
                             saName: assignment.saName,
                             note: assignment.note || "",
@@ -1105,19 +1188,39 @@ export default {
                             timestamp: new Date().toISOString()
                         };
                     });
-                    await setDoc(docRef, newData);
+                    
+                    // Update with both deletions and new data
+                    if (docSnap.exists()) {
+                        await updateDoc(docRef, updateData);
+                    } else {
+                        const newData = {};
+                        dateAssignments.forEach((assignment, index) => {
+                            newData[`assign${index + 1}`] = {
+                                pro: assignment.pro,
+                                saName: assignment.saName,
+                                note: assignment.note || "",
+                                status: assignment.status,
+                                date: assignment.date instanceof Date ? assignment.date.toISOString() : assignment.date,
+                                timestamp: new Date().toISOString()
+                            };
+                        });
+                        await setDoc(docRef, newData);
+                    }
                 }
                 
-                console.log(`Assignments saved to Firebase for ${dateKey}`);
+                console.log("Assignments saved to Firebase for all dates");
             } catch (error) {
                 console.error("Error saving assignments to Firebase:", error);
-                //alert("Failed to save assignment to Firebase. Please try again.");
             }
         },
         listenToAssignments() {
             const dateKey = this.getTodayDateKey();
             const docRef = doc(db, "SA_Assignment", `isuzu&calapan&assignments&${dateKey}`);
-            onSnapshot(docRef, (docSnap) => {
+            // Unsubscribe from previous listener if it exists
+            if (this.assignmentsListener) {
+                this.assignmentsListener();
+            }
+            this.assignmentsListener = onSnapshot(docRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     this.assignments = Object.values(data).map(item => ({
@@ -1137,9 +1240,21 @@ export default {
         },
         async loadAssignmentsByDateRange() {
             // Load assignments for a specific date range
-            if (!this.historyFromDate) {
-                this.listenToAssignments(); // Default to today
+            const today = this.todayDate;
+            
+            // Check if filtering is for today only
+            const isFilteringToday = this.historyFromDate === today && this.historyToDate === today;
+            
+            if (isFilteringToday || !this.historyFromDate) {
+                // Re-enable real-time listening for today's data
+                this.listenToAssignments();
                 return;
+            }
+
+            // Unsubscribe from real-time listener before loading historical data
+            if (this.assignmentsListener) {
+                this.assignmentsListener();
+                this.assignmentsListener = null;
             }
 
             try {

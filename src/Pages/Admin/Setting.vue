@@ -8,9 +8,9 @@
   <div v-else :class="themeClass" :style="themeStyle" class="min-h-screen flex flex-col">
 
     <!-- Topbar (sticky) -->
-    <div class="sticky top-0 z-50">
+    <!-- <div class="sticky top-0 z-50">
       <Topbar />
-    </div>
+    </div> -->
 
     <!-- Main Content -->
     <main class="flex-1 overflow-auto p-6">
@@ -188,7 +188,7 @@ import { useRouter } from "vue-router";
 import { auth, db } from "../../Firebase/Firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import Topbar from "../../components/Topbar.vue";
+//import Topbar from "../../components/Topbar.vue";
 
 /* 🔧 ADDED */
 import Loaders from "../../components/Loaders.vue";

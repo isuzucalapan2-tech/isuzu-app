@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoading" :class="themeClass" :style="themeStyle" class="min-h-screen flex flex-col">
     <!-- Topbar -->
-    <Topbar />
+    <!-- <Topbar /> -->
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
@@ -297,7 +297,7 @@ import { useRouter } from 'vue-router';
 import { auth, db } from '../../Firebase/Firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import Topbar from '../../components/Topbar.vue';
+//import Topbar from '../../components/Topbar.vue';
 import Loaders from '../../components/Loaders.vue';
 
 import {
