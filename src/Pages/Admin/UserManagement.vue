@@ -8,7 +8,7 @@
   <div v-else :class="themeClass" :style="themeStyle" class="min-h-screen flex flex-col">
 
     <!-- Topbar -->
-    <Topbar />
+    <!-- <Topbar /> -->
 
     <main class="flex-1 p-6">
       <!-- Page Title -->
@@ -143,7 +143,7 @@ import {
   doc
 } from "firebase/firestore";
 
-import Topbar from "../../components/Topbar.vue";
+//import Topbar from "../../components/Topbar.vue";
 /* 🔧 ADDED */
 import Loaders from "../../components/Loaders.vue";
 

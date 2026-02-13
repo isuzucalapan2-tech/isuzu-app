@@ -11,7 +11,7 @@
         <!-- Desktop Menu (centered) -->
         <div class="hidden md:flex flex-1 justify-center space-x-8">
           <router-link
-            to="/dashboard"
+            to="/admin/dashboard"
             class="nav-link"
             active-class="nav-link-active"
           >
@@ -19,7 +19,7 @@
           </router-link>
 
           <router-link
-            to="/user-management"
+            to="/admin/user-management"
             class="nav-link"
             active-class="nav-link-active"
           >
@@ -27,7 +27,7 @@
           </router-link>
 
           <!-- <router-link
-            to="/approve"
+            to="/admin/approve"
             class="nav-link"
             active-class="nav-link-active"
           >
@@ -35,7 +35,7 @@
           </router-link> -->
 
           <router-link
-            to="/inventory"
+            to="/admin/inventory"
             class="nav-link"
             active-class="nav-link-active"
           >
@@ -43,7 +43,15 @@
           </router-link>
 
           <router-link
-            to="/settings"
+            to="/sa-rotation"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
+            Retail Order
+          </router-link>
+
+          <router-link
+            to="/admin/settings"
             class="nav-link"
             active-class="nav-link-active"
           >
@@ -70,35 +78,35 @@
     <!-- Mobile Menu -->
     <div v-if="isOpen" class="md:hidden bg-neutral-800 px-4 pb-4">
       <router-link
-        to="/dashboard"
+        to="/admin/dashboard"
         class="block py-2 nav-link"
         active-class="nav-link-active"
         @click="isOpen = false"
       >Dashboard</router-link>
 
       <router-link
-        to="/user-management"
+        to="/admin/user-management"
         class="block py-2 nav-link"
         active-class="nav-link-active"
         @click="isOpen = false"
       >User Management</router-link>
 
-      <router-link
-        to="/approve"
+      <!-- <router-link
+        to="/admin/approve"
         class="block py-2 nav-link"
         active-class="nav-link-active"
         @click="isOpen = false"
-      >Approve</router-link>
+      >Approve</router-link> -->
 
       <router-link
-        to="/inventory"
+        to="/admin/inventory"
         class="block py-2 nav-link"
         active-class="nav-link-active"
         @click="isOpen = false"
       >Inventory</router-link>
 
       <router-link
-        to="/settings"
+        to="/admin/settings"
         class="block py-2 nav-link"
         active-class="nav-link-active"
         @click="isOpen = false"

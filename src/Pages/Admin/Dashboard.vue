@@ -8,9 +8,9 @@
   <div v-else :class="themeClass" :style="themeStyle" class="h-screen flex flex-col">
 
     <!-- Sticky Topbar -->
-    <div class="sticky top-0 z-50">
+    <!-- <div class="sticky top-0 z-50">
       <Topbar />
-    </div>
+    </div> -->
 
     <!-- Scrollable Content -->
     <div class="flex-1 overflow-y-auto p-6">
@@ -105,7 +105,7 @@ import { useRouter } from "vue-router";
 import { auth, db } from "../../Firebase/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
-import Topbar from "../../components/Topbar.vue";
+//import Topbar from "../../components/Topbar.vue";
 
 /* 🔧 ADDED */
 import Loaders from "../../components/Loaders.vue";
