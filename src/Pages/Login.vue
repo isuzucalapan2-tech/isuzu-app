@@ -173,7 +173,7 @@ const login = async () => {
     }
 
     successMessage.value = "Login successful! Redirecting...";
-    setTimeout(() => router.push("/dashboard"), 1200);
+    setTimeout(() => router.push("/admin/dashboard"), 1200);
 
   } catch (err) {
     if (err.code === "auth/wrong-password") {
