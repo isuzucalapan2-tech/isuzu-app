@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[50%] shrink-0">
       
       <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-3 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-2 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
           <span class="text-xl">📦</span>
           <h2 class="font-bold text-sm tracking-wide uppercase">Retail Orders</h2>
         </div>
@@ -26,16 +26,14 @@
                   <span class="text-lg leading-none font-bold">⋮</span>
                 </button>
 
-                
                 <div v-if="dropdownIndex === index && dropdownType === 'prOrders'" 
                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-xl border border-slate-100 z-50 overflow-hidden animate-fade-in-down">
-                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:pl-5 transition-all duration-200 flex items-center gap-2" @click.stop="editPROrder(index, pr)">
+                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:pl-5 transition-all duration-200 flex items-center gap-2" @click.stop="openPREditModal(index, pr)">
                     <span>✎</span> Edit
                   </button>
-                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-red-500 hover:bg-red-50 hover:pl-5 transition-all duration-200 flex items-center gap-2 border-t border-slate-100" @click.stop="deletePROrder(index, pr)">
+                  <button class="w-full text-left px-4 py-2 text-xs font-medium text-red-500 hover:bg-red-50 hover:pl-5 transition-all duration-200 flex items-center gap-2 border-t border-slate-100" @click.stop="openPRDeleteModal(index, pr)">
                     <span>🗑</span> Delete
                   </button>
-
                 </div>
               </div>
             </li>
@@ -67,13 +65,13 @@
       </div>
 
       <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-3 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-2 text-white flex items-center gap-2 shadow-sm  shrink-0 ">
           <span class="text-xl">👤</span>
           <h2 class="font-bold text-sm tracking-wide uppercase">Service Advisors</h2>
         </div>
 
 
-        <div class="flex-1 overflow-y-auto p-3">
+        <div class="flex-1 p-3">
           <ul class="space-y-2">
             <li v-for="(sa, index) in serviceAdvisors" :key="index" 
                 class="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
@@ -157,16 +155,9 @@
                   </button>
 
                   <div v-if="dropdownIndex === index && dropdownType === 'serviceAdvisors'" 
-                       class="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-xl border border-slate-100 z-50 overflow-hidden">
-                    <button class="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:pl-4 transition-all duration-200" @click.stop="editServiceAdvisor(index, sa.saName)">✎ Edit</button>
-                    <div class="bg-slate-50 px-3 py-1 text-[9px] font-bold text-slate-400 uppercase">Status</div>
-                    <button v-for="status in statuses" :key="status" 
-                            class="w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:bg-indigo-50 hover:pl-4 transition-all duration-200"
-                            @click.stop="updateServiceAdvisorStatus(index, sa.saName, status)">
-                      {{ status }}
-                    </button>
-                    <button class="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-50 hover:pl-4 border-t border-slate-100 transition-all duration-200" @click.stop="deleteServiceAdvisor(index, sa.saName)">🗑 Delete</button>
-
+                       class="absolute right-0 bottom-full mb-1 w-32 bg-white rounded-lg shadow-xl border border-slate-100 z-[60] overflow-hidden animate-fade-in-up">
+                    <button class="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:pl-4 transition-all duration-200" @click.stop="openSAEditModal(index, sa.saName, sa.saStatus)">✎ Edit</button>
+                    <button class="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-50 hover:pl-4 border-t border-slate-100 transition-all duration-200" @click.stop="openSADeleteModal(index, sa.saName)">🗑 Delete</button>
                   </div>
                 </div>
               </div>
@@ -200,7 +191,7 @@
       </div>
 
       <div class="bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-3 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-2 text-white flex items-center gap-2 shadow-sm shrink-0 z-10">
           <span class="text-xl">🎯</span>
           <h2 class="font-bold text-sm tracking-wide uppercase">SA's Assign to RO's</h2>
         </div>
@@ -487,6 +478,98 @@
        </div>
     </div>
 
+    <div v-if="showEditPRModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-fade-in" @click="closePREditModal">
+       <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100" @click.stop>
+          <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center text-white">
+             <h3 class="font-bold">Edit Retail Order</h3>
+             <button @click="closePREditModal" class="text-white/80 hover:text-white hover:scale-110 font-bold text-xl transition-transform duration-200">✕</button>
+          </div>
+          <div class="p-6 space-y-4">
+             <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">PR Order Name</label>
+                <input 
+                   v-model="editingPROrder" 
+                   @input="editingPROrder = editingPROrder.toUpperCase()"
+                   class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                   placeholder="Enter PR Order name..."
+                />
+             </div>
+          </div>
+          <div class="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-100">
+             <button @click="closePREditModal" class="px-4 py-2 rounded text-slate-600 font-bold text-xs hover:bg-slate-200 hover:shadow-sm transition-all duration-200">Cancel</button>
+             <button @click="savePROrderEdit" class="px-4 py-2 rounded bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 shadow-md transition-all duration-200">Save Changes</button>
+          </div>
+       </div>
+    </div>
+
+    <div v-if="showDeletePRModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-fade-in" @click="closePRDeleteModal">
+       <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100" @click.stop>
+          <div class="bg-gradient-to-r from-red-600 to-red-700 p-4 flex justify-between items-center text-white">
+             <h3 class="font-bold">Delete Retail Order</h3>
+             <button @click="closePRDeleteModal" class="text-white/80 hover:text-white hover:scale-110 font-bold text-xl transition-transform duration-200">✕</button>
+          </div>
+          <div class="p-6 space-y-4">
+             <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p class="text-sm text-slate-700"><span class="font-bold">PR Order:</span> {{ deletingPROrder }}</p>
+             </div>
+             <p class="text-sm text-slate-600">Are you sure you want to delete this retail order? This action cannot be undone.</p>
+          </div>
+          <div class="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-100">
+             <button @click="closePRDeleteModal" class="px-4 py-2 rounded text-slate-600 font-bold text-xs hover:bg-slate-200 hover:shadow-sm transition-all duration-200">Cancel</button>
+             <button @click="confirmDeletePROrder" class="px-4 py-2 rounded bg-red-600 text-white font-bold text-xs hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 shadow-md transition-all duration-200">Delete</button>
+          </div>
+       </div>
+    </div>
+
+    <div v-if="showEditSAModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-fade-in" @click="closeSAEditModal">
+       <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100" @click.stop>
+          <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center text-white">
+             <h3 class="font-bold">Edit Service Advisor</h3>
+             <button @click="closeSAEditModal" class="text-white/80 hover:text-white hover:scale-110 font-bold text-xl transition-transform duration-200">✕</button>
+          </div>
+          <div class="p-6 space-y-4">
+             <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Service Advisor Name</label>
+                <input 
+                   v-model="editingSAName" 
+                   @input="editingSAName = editingSAName.toUpperCase()"
+                   class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                   placeholder="Enter Service Advisor name..."
+                />
+             </div>
+             <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Status</label>
+                <select v-model="editingSAStatus" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                   <option v-for="status in statuses" :key="status" :value="status">{{ status }}</option>
+                </select>
+             </div>
+          </div>
+          <div class="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-100">
+             <button @click="closeSAEditModal" class="px-4 py-2 rounded text-slate-600 font-bold text-xs hover:bg-slate-200 hover:shadow-sm transition-all duration-200">Cancel</button>
+             <button @click="saveSAEdit" class="px-4 py-2 rounded bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 shadow-md transition-all duration-200">Save Changes</button>
+          </div>
+       </div>
+    </div>
+
+    <div v-if="showDeleteSAModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-fade-in" @click="closeSADeleteModal">
+       <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100" @click.stop>
+          <div class="bg-gradient-to-r from-red-600 to-red-700 p-4 flex justify-between items-center text-white">
+             <h3 class="font-bold">Delete Service Advisor</h3>
+             <button @click="closeSADeleteModal" class="text-white/80 hover:text-white hover:scale-110 font-bold text-xl transition-transform duration-200">✕</button>
+          </div>
+          <div class="p-6 space-y-4">
+             <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p class="text-sm text-slate-700"><span class="font-bold">Service Advisor:</span> {{ deletingSAName }}</p>
+             </div>
+             <p class="text-sm text-slate-600">Are you sure you want to delete this service advisor? This action cannot be undone.</p>
+          </div>
+          <div class="bg-slate-50 p-4 flex justify-end gap-3 border-t border-slate-100">
+             <button @click="closeSADeleteModal" class="px-4 py-2 rounded text-slate-600 font-bold text-xs hover:bg-slate-200 hover:shadow-sm transition-all duration-200">Cancel</button>
+             <button @click="confirmDeleteSA" class="px-4 py-2 rounded bg-red-600 text-white font-bold text-xs hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 shadow-md transition-all duration-200">Delete</button>
+          </div>
+       </div>
+    </div>
+
   </div>
 </template>
 
@@ -503,6 +586,19 @@ export default {
             newPROrder: "",
             dropdownIndex: null,
             dropdownType: null,
+            showEditPRModal: false,
+            showDeletePRModal: false,
+            editingPROrder: "",
+            editingPRIndex: null,
+            deletingPROrder: "",
+            deletingPRIndex: null,
+            showEditSAModal: false,
+            showDeleteSAModal: false,
+            editingSAName: "",
+            editingSAStatus: "",
+            editingSAIndex: null,
+            deletingSAName: "",
+            deletingSAIndex: null,
             activeTab: "sa",
             statuses: [],
             assignments: [],
@@ -1007,9 +1103,149 @@ export default {
                 } catch (error) {
             }
         },
+        openPREditModal(index, prName) {
+            this.editingPRIndex = index;
+            this.editingPROrder = prName;
+            this.showEditPRModal = true;
+            this.closeDropdown();
+        },
+        closePREditModal() {
+            this.showEditPRModal = false;
+            this.editingPROrder = "";
+            this.editingPRIndex = null;
+        },
+        async savePROrderEdit() {
+            if (!this.editingPROrder.trim()) {
+                return;
+            }
+            
+            try {
+                const oldName = this.prOrders[this.editingPRIndex];
+                const newName = this.editingPROrder.trim().toUpperCase();
+                const docRef = doc(db, "PR_Order", "isuzu&calapan&pro");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const fieldKey = Object.keys(data).find(key => data[key] === oldName);
+                    if (fieldKey) {
+                        await updateDoc(docRef, { [fieldKey]: newName });
+                        this.closePREditModal();
+                    }
+                }
+            } catch (error) {
+                console.error("Error saving PR Order:", error);
+            }
+        },
+        openPRDeleteModal(index, prName) {
+            this.deletingPRIndex = index;
+            this.deletingPROrder = prName;
+            this.showDeletePRModal = true;
+            this.closeDropdown();
+        },
+        closePRDeleteModal() {
+            this.showDeletePRModal = false;
+            this.deletingPROrder = "";
+            this.deletingPRIndex = null;
+        },
+        async confirmDeletePROrder() {
+            try {
+                const docRef = doc(db, "PR_Order", "isuzu&calapan&pro");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const fieldKey = Object.keys(data).find(key => data[key] === this.deletingPROrder);
+                    if (fieldKey) {
+                        await updateDoc(docRef, { [fieldKey]: deleteField() });
+                        this.closePRDeleteModal();
+                    }
+                }
+            } catch (error) {
+                console.error("Error deleting PR Order:", error);
+            }
+        },
+        openSAEditModal(index, saName, saStatus) {
+            this.editingSAIndex = index;
+            this.editingSAName = saName;
+            this.editingSAStatus = saStatus;
+            this.showEditSAModal = true;
+            this.closeDropdown();
+        },
+        closeSAEditModal() {
+            this.showEditSAModal = false;
+            this.editingSAName = "";
+            this.editingSAStatus = "";
+            this.editingSAIndex = null;
+        },
+        async saveSAEdit() {
+            if (!this.editingSAName.trim()) {
+                return;
+            }
+
+            try {
+                const oldName = this.serviceAdvisors[this.editingSAIndex].saName;
+                const newName = this.editingSAName.trim().toUpperCase();
+                const docRef = doc(db, "Service_Advisor", "isuzu&calapan&sa");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const fieldKey = Object.keys(data).find(key => data[key].saName === oldName);
+                    if (fieldKey) {
+                        await updateDoc(docRef, {
+                            [fieldKey]: {
+                                saName: newName,
+                                saStatus: this.editingSAStatus
+                            }
+                        });
+                        this.closeSAEditModal();
+                    }
+                }
+            } catch (error) {
+                console.error("Error saving Service Advisor:", error);
+            }
+        },
+        openSADeleteModal(index, saName) {
+            this.deletingSAIndex = index;
+            this.deletingSAName = saName;
+            this.showDeleteSAModal = true;
+            this.closeDropdown();
+        },
+        closeSADeleteModal() {
+            this.showDeleteSAModal = false;
+            this.deletingSAName = "";
+            this.deletingSAIndex = null;
+        },
+        async confirmDeleteSA() {
+            try {
+                const docRef = doc(db, "Service_Advisor", "isuzu&calapan&sa");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const fieldKey = Object.keys(data).find(key => data[key].saName === this.deletingSAName);
+                    if (fieldKey) {
+                        await updateDoc(docRef, { [fieldKey]: deleteField() });
+                        this.closeSADeleteModal();
+                    }
+                }
+            } catch (error) {
+                console.error("Error deleting Service Advisor:", error);
+            }
+        },
         closeDropdown() {
             this.dropdownIndex = null;
             this.dropdownType = null;
+        },
+        toggleDropdown(index, type) {
+            // Toggle dropdown: if clicking the same button, close it; otherwise open it
+            if (this.dropdownIndex === index && this.dropdownType === type) {
+                this.closeDropdown();
+            } else {
+                this.dropdownIndex = index;
+                this.dropdownType = type;
+            }
         },
         // Assignment Methods
         async proceedAssignment() {
